@@ -49,7 +49,7 @@ sayHi();
   const [previewWidth, setPreviewWidth] = useState(50);
   const [innerPaddingX, setInnerPaddingX] = useState(0);
   const [innerPaddingY, setInnerPaddingY] = useState(0);
-  const [pageName, setPageName] = useState("@iclasser");
+  const [pageName, setPageName] = useState("@postmaker.dev");
 
   const [logoUrlLabel, setLogoUrlLabel] = useState(
     "Created with Postmaker.dev"
