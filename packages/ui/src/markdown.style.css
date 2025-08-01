@@ -1,7 +1,8 @@
 .root-card {
-  background-color: black;
-  color: white;
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
   position: relative;
+  overflow: hidden;
 }
 
 .page-name {
@@ -14,6 +15,9 @@
   font-weight: lighter;
   font-size: 0.8em;
   font-family: "Courier New", Courier, monospace;
+  @media (max-width: 600px) {
+    font-size: 0.9em;
+  }
 }
 
 .logo-container {
@@ -30,10 +34,15 @@
   opacity: 0.8;
 }
 .logo-container span {
+  opacity: 0.8;
   font-size: 0.2em;
   color: #0febffdd;
   font-weight: lighter;
   font-family: "Courier New", Courier, monospace;
+  /* for mobile fontsize change */
+  @media (max-width: 600px) {
+    font-size: 0.9em;
+  }
 }
 
 h1,
@@ -45,6 +54,9 @@ h6 {
   color: #0febff;
   font-weight: bold;
   font-size: 2em;
+  @media (max-width: 600px) {
+    font-size: 1.6em;
+  }
 }
 
 ul {
@@ -62,6 +74,9 @@ li {
 li code {
   color: #efefef;
   font-weight: bold;
+  @media (max-width: 600px) {
+    background-color: #0c3236;
+  }
 }
 
 pre code.hljs {
@@ -76,13 +91,16 @@ pre code.hljs {
 code.hljs {
   padding: 3px 5px;
 }
-.contribute-container{
+.contribute-container {
   font-size: 0.5em;
   font-family: "Courier New", Courier, monospace;
-  color: #323232dd;
+  color: #8a2a2add;
 }
-.github-link{
+.github-link {
   color: #0c3236;
+  @media (max-width: 600px) {
+    font-size: 1.6em;
+  }
 }
 .github-link:hover {
   text-decoration: underline;

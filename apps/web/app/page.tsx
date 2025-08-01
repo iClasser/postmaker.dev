@@ -181,7 +181,7 @@ sayHi();
           <input
             type="range"
             min="0"
-            max="80"
+            max="100"
             value={innerPaddingX}
             onChange={(e) => setInnerPaddingX(Number(e.target.value))}
             className="w-full"
@@ -195,7 +195,7 @@ sayHi();
           <input
             type="range"
             min="0"
-            max="80"
+            max="100"
             value={innerPaddingY}
             onChange={(e) => setInnerPaddingY(Number(e.target.value))}
             className="w-full"
@@ -211,7 +211,7 @@ sayHi();
           width: `${previewWidth}%`,
         }}
         onMouseDown={handleDragStart}
-        className="m-auto w-full min-h-screen transition-all duration-200 preview-right-panel"
+        className="m-auto w-full transition-all duration-200 preview-right-panel"
       >
         <MarkdownQuizPreview
           logoUrl={logoUrl}
