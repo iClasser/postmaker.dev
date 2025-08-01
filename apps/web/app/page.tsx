@@ -1,102 +1,263 @@
-import Image, { type ImageProps } from "next/image";
+"use client";
 import { Button } from "@repo/ui/button";
-import styles from "./page.module.css";
-
-type Props = Omit<ImageProps, "src"> & {
-  srcLight: string;
-  srcDark: string;
-};
-
-const ThemeImage = (props: Props) => {
-  const { srcLight, srcDark, ...rest } = props;
-
-  return (
-    <>
-      <Image {...rest} src={srcLight} className="imgLight" />
-      <Image {...rest} src={srcDark} className="imgDark" />
-    </>
-  );
-};
+import { MarkdownQuizPreview } from "@repo/ui/MarkdownQuizPreview";
+import { MainHomeLayout } from "@repo/web-ui/layout";
+import { useEffect, useState } from "react";
+import * as htmlToImage from "html-to-image";
+const STORAGE_KEY = "markdownQuizPreviewSettings";
+const tabs = [
+  {
+    key: "markdown",
+    label: "Markdown Card",
+  },
+];
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <ThemeImage
-          className={styles.logo}
-          srcLight="turborepo-dark.svg"
-          srcDark="turborepo-light.svg"
-          alt="Turborepo logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [tab, setTab] = useState("markdown");
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new/clone?demo-description=Learn+to+implement+a+monorepo+with+a+two+Next.js+sites+that+has+installed+three+local+packages.&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F4K8ZISWAzJ8X1504ca0zmC%2F0b21a1c6246add355e55816278ef54bc%2FBasic.png&demo-title=Monorepo+with+Turborepo&demo-url=https%3A%2F%2Fexamples-basic-web.vercel.sh%2F&from=templates&project-name=Monorepo+with+Turborepo&repository-name=monorepo-turborepo&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fturborepo%2Ftree%2Fmain%2Fexamples%2Fbasic&root-directory=apps%2Fdocs&skippable-integrations=1&teamSlug=vercel&utm_source=create-turbo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://turborepo.com/docs?utm_source"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-        <Button appName="web" className={styles.secondary}>
-          Open alert
-        </Button>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com/templates?search=turborepo&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://turborepo.com?utm_source=create-turbo"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to turborepo.com →
-        </a>
-      </footer>
-    </div>
+  return (
+    <MainHomeLayout tab={tab} tabs={tabs} setTab={setTab}>
+      {tab === "markdown" ? <QuestionAnswer /> : null}
+    </MainHomeLayout>
   );
 }
+
+const cardBgColor = "bg-white";
+const textColor = "text-gray-900";
+const borderColor = "border-gray-300";
+const QuestionAnswer = () => {
+  const [mdx, setMdx] = useState(`
+###### 1. What's the output?
+
+\`\`\`javascript
+function sayHi() {
+  console.log(name);
+  console.log(age);
+  var name = 'Lydia';
+  let age = 21;
+}
+
+sayHi();
+\`\`\`
+
+- A: \`Lydia\` and \`undefined\`
+- B: \`Lydia\` and \`ReferenceError\`
+- C: \`ReferenceError\` and \`21\`
+- D: \`undefined\` and \`ReferenceError\`
+`);
+
+  const [previewWidth, setPreviewWidth] = useState(50);
+  const [innerPaddingX, setInnerPaddingX] = useState(0);
+  const [innerPaddingY, setInnerPaddingY] = useState(0);
+  const [pageName, setPageName] = useState("@iclasser");
+
+  const [logoUrlLabel, setLogoUrlLabel] = useState(
+    "Created with Postmaker.dev"
+  );
+  const [logoUrl, setLogoUrl] = useState("/logo.svg");
+
+  const handleDragStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+
+    const handleMouseMove = (moveEvent: MouseEvent) => {
+      const newWidth =
+        previewWidth + ((moveEvent.clientX - startX) / window.innerWidth) * 100;
+      setPreviewWidth(Math.max(20, Math.min(newWidth, 80))); // Limit width between 20% and 80%
+    };
+
+    const handleMouseUp = () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const {
+          previewWidth,
+          innerPaddingX,
+          innerPaddingY,
+          pageName,
+          logoUrl,
+          logoUrlLabel,
+        } = JSON.parse(saved);
+        if (typeof previewWidth === "number") setPreviewWidth(previewWidth);
+        if (typeof innerPaddingX === "number") setInnerPaddingX(innerPaddingX);
+        if (typeof innerPaddingY === "number") setInnerPaddingY(innerPaddingY);
+        if (typeof pageName === "string") setPageName(pageName);
+        if (typeof logoUrl === "string") setLogoUrl(logoUrl);
+        if (typeof logoUrlLabel === "string") setLogoUrlLabel(logoUrlLabel);
+      } catch {}
+    }
+  }, []);
+
+  // Save to localStorage whenever any value changes
+  useEffect(() => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        previewWidth,
+        innerPaddingX,
+        innerPaddingY,
+        pageName,
+        logoUrl,
+        logoUrlLabel,
+      })
+    );
+  }, [
+    previewWidth,
+    innerPaddingX,
+    innerPaddingY,
+    pageName,
+    logoUrl,
+    logoUrlLabel,
+  ]);
+
+  return (
+    <div className="p-4 flex md:flex-row flex-col gap-2 w-full">
+      <div
+        style={{
+          minWidth: "300px",
+        }}
+        className="min-h-screen"
+      >
+        <h2>Markdown Card</h2>
+        <p>Page Name:</p>
+        <input
+          className="w-full px-2 border rounded-md"
+          value={pageName}
+          onChange={(e) => setPageName(e.target.value)}
+          placeholder="Enter page name..."
+        />
+        <p>Logo URL:</p>
+        <input
+          className="w-full px-2 border rounded-md"
+          value={logoUrl}
+          onChange={(e) => setLogoUrl(e.target.value)}
+          placeholder="Enter logo URL..."
+        />
+        <p>Logo URL Label:</p>
+        <input
+          className="w-full px-2 border rounded-md"
+          value={logoUrlLabel}
+          onChange={(e) => setLogoUrlLabel(e.target.value)}
+          placeholder="Enter logo URL label..."
+        />
+        <p>Paste Markdown:</p>
+        <textarea
+          className="w-full h-64 px-2 border rounded-md"
+          value={mdx}
+          onChange={(e) => setMdx(e.target.value)}
+          placeholder="Paste your markdown here..."
+        />
+
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Slider */}
+          <label className="block mb-2">
+            Preview Width: {previewWidth.toFixed(2)}%
+          </label>
+          <input
+            type="range"
+            min="20"
+            max="80"
+            value={previewWidth}
+            onChange={(e) => setPreviewWidth(Number(e.target.value))}
+            className="w-full"
+          />
+        </div>
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Slider */}
+          <label className="block mb-2">
+            Inner Padding X: {innerPaddingX}px
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="80"
+            value={innerPaddingX}
+            onChange={(e) => setInnerPaddingX(Number(e.target.value))}
+            className="w-full"
+          />
+        </div>
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Slider */}
+          <label className="block mb-2">
+            Inner Padding Y: {innerPaddingY}px
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="80"
+            value={innerPaddingY}
+            onChange={(e) => setInnerPaddingY(Number(e.target.value))}
+            className="w-full"
+          />
+        </div>
+        <Button
+          disabled={!mdx}
+          className="mt-2 bg-black text-white  p-2 rounded-md cursor-pointer"
+          onClick={() => {
+            // download the markdown quiz preview as a PNG
+            const element = document.querySelector(".root-card");
+            if (!element) return;
+            htmlToImage
+              .toPng(element as HTMLElement)
+              .then((dataUrl) => {
+                const link = document.createElement("a");
+                link.download = "quiz-preview.png";
+                link.href = dataUrl;
+                link.click();
+              })
+              .catch((error) => {
+                console.error("Error downloading image:", error);
+              });
+          }}
+        >
+          Download as png
+        </Button>
+      </div>
+      {/* Resizable Preview Panel */}
+      <div
+        style={{
+          cursor: "ew-resize",
+          zIndex: 10,
+          background: "transparent",
+          width: `${previewWidth}%`,
+        }}
+        onMouseDown={handleDragStart}
+        className="m-auto w-full min-h-screen transition-all duration-200"
+      >
+        <MarkdownQuizPreview
+          logoUrl={logoUrl}
+          logoUrlLabel={logoUrlLabel}
+          pageName={pageName}
+          markdown={mdx}
+          styles={{
+            ...(innerPaddingX
+              ? {
+                  paddingLeft: `${innerPaddingX}px`,
+                  paddingRight: `${innerPaddingX}px`,
+                }
+              : {}),
+            ...(innerPaddingY
+              ? {
+                  paddingTop: `${innerPaddingY}px`,
+                  paddingBottom: `${innerPaddingY}px`,
+                }
+              : {}),
+          }}
+          classNameRoot={`bg-gray-200 w-full rounded-xl border p-6 shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} ${borderColor}
+          aspect-ratio[4/3] w-full`}
+          classNameMarkdown={`prose max-w-none prose-pre:bg-transparent prose-code:before:hidden prose-code:after:hidden`}
+        />
+      </div>
+    </div>
+  );
+};

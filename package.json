@@ -1,5 +1,13 @@
 {
-  "name": "postermaker",
+  "name": "postmaker",
+  "version": "1.0.0",
+  "description": "A platform for creating and sharing interactive posters.",
+  "author": "iClasser",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iClasser/postmaker.git"
+  },
   "private": true,
   "scripts": {
     "build": "turbo run build",
