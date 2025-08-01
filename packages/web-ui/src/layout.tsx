@@ -1,4 +1,4 @@
-import { GithubIcon } from "lucide-react";
+import { GitBranch } from "lucide-react";
 import { type JSX } from "react";
 import * as htmlToImage from "html-to-image";
 
@@ -40,8 +40,8 @@ export function Header({
   setActiveTab: (tab: string) => void;
 }): JSX.Element {
   return (
-    <header className="p-2 flex items-center font-semibold text-lg text-gray-700">
-      <div className="pr-2 select-none">
+    <header className="p-2 flex md:flex-row flex-col gap-2 items-center font-semibold text-lg text-gray-700">
+      <div className="select-none flex items-center gap-4">
         <div className="flex items-center select-none">
           <ThemeImage
             className="w-9 h-9"
@@ -53,7 +53,7 @@ export function Header({
           Postmaker.dev
         </div>
       </div>
-      <div className="flex-1 text-center w-fit ml-2">
+      <div className="flex-1 text-center">
         <div
           style={{
             marginLeft: "20px",
@@ -85,44 +85,74 @@ export function Header({
           ))}
         </div>
       </div>
-      <button
-        style={{
-          marginRight: "20px",
-        }}
-        className="bg-black text-white  p-2 rounded-md cursor-pointer"
-        onClick={() => {
-          // download the markdown quiz preview as a PNG
-          const element = document.querySelector(".root-card");
-          if (!element) return;
-          htmlToImage
-            .toPng(element as HTMLElement)
-            .then((dataUrl: any) => {
-              const link = document.createElement("a");
-              link.download = "quiz-preview.png";
-              link.href = dataUrl;
-              link.click();
-            })
-            .catch((error: any) => {
-              console.error("Error downloading image:", error);
-            });
-        }}
-      >
-        Download as png
-      </button>
-      <div className="contribute-container">
-        <a
-          href="https://github.com/iClasser/postmaker.dev.git"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="github-link"
-        >
-          Contribute{" "}
-          <span>
-            <GithubIcon className="w-8 h-8 inline-block" />
-          </span>
-        </a>
+      <div className="hidden-mobile">
+        <DownloadButton />
       </div>
+      <ContributeSection className="hidden-mobile" />
     </header>
+  );
+}
+export function ContributeSection({
+  className,
+}: {
+  // children: React.ReactNode;
+  className?: string;
+}): JSX.Element {
+  return (
+    <div className={`contribute-container ${className}`}>
+      <a
+        href="https://github.com/iClasser/postmaker.dev.git"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="github-link"
+      >
+        Contribute{" "}
+        <span>
+          <GitBranch className="w-8 h-8 inline-block" />
+        </span>
+      </a>
+    </div>
+  );
+}
+export function DownloadButton({
+  ...props
+}: {
+  className?: string;
+  [key: string]: any;
+}): JSX.Element {
+  const downloadAsPng = () => {
+    // download the markdown quiz preview as a PNG
+    const element = document.querySelector(".root-card");
+    if (!element) return;
+    htmlToImage
+      .toPng(element as HTMLElement)
+      .then((dataUrl: any) => {
+        const link = document.createElement("a");
+        link.download = "quiz-preview.png";
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((error: any) => {
+        console.error("Error downloading image:", error);
+      });
+  };
+  return (
+    <button
+      className={
+        "bg-black flex justify-center items-center gap-2 text-white p-2 rounded-md cursor-pointer " +
+        (props.className || "")
+      }
+      {...props}
+      onClick={() => downloadAsPng()}
+    >
+      <img src='/logo.svg' alt="Postmaker.dev logo" style={{
+        width: "24px",
+        height: "24px",
+        marginRight: "2px",
+        display: "inline-block",
+      }} />
+      <span className="inline-block ml-2">Download as PNG</span>
+    </button>
   );
 }
 
@@ -142,6 +172,11 @@ export function MainHomeLayout({
       <Header tabs={tabs} activeTab={tab} setActiveTab={setTab} />
       <main className="min-h-screen">{children}</main>
       <Footer />
+      <div className="">
+        <div className="flex justify-center items-center mt-4 p-4">
+          <ContributeSection className="" />
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 // import { Button } from "@repo/ui/button";
 import { MarkdownQuizPreview } from "@repo/ui/MarkdownQuizPreview";
-import { MainHomeLayout } from "@repo/web-ui/layout";
+import { DownloadButton, MainHomeLayout } from "@repo/web-ui/layout";
 import { useEffect, useState } from "react";
+import './page.module.css';
 const STORAGE_KEY = "markdownQuizPreviewSettings";
 const tabs = [
   {
@@ -62,7 +63,7 @@ sayHi();
     const handleMouseMove = (moveEvent: MouseEvent) => {
       const newWidth =
         previewWidth + ((moveEvent.clientX - startX) / window.innerWidth) * 100;
-      setPreviewWidth(Math.max(20, Math.min(newWidth, 80))); // Limit width between 20% and 80%
+      setPreviewWidth(Math.max(20, Math.min(newWidth, 100))); // Limit width between 20% and 100%
     };
 
     const handleMouseUp = () => {
@@ -166,7 +167,7 @@ sayHi();
           <input
             type="range"
             min="20"
-            max="80"
+            max="100"
             value={previewWidth}
             onChange={(e) => setPreviewWidth(Number(e.target.value))}
             className="w-full"
@@ -210,7 +211,7 @@ sayHi();
           width: `${previewWidth}%`,
         }}
         onMouseDown={handleDragStart}
-        className="m-auto w-full min-h-screen transition-all duration-200"
+        className="m-auto w-full min-h-screen transition-all duration-200 preview-right-panel"
       >
         <MarkdownQuizPreview
           logoUrl={logoUrl}
@@ -236,6 +237,8 @@ sayHi();
           classNameMarkdown={`prose max-w-none prose-pre:bg-transparent prose-code:before:hidden prose-code:after:hidden`}
         />
       </div>
+      <DownloadButton className="show-mobile bg-black shadow-2xl text-white p-4 rounded-md hover:bg-sky-700" />
+
     </div>
   );
 };

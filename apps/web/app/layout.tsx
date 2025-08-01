@@ -11,9 +11,25 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
 });
 
+const keyworsSeo = [
+    "postermaker",
+    "interactive",
+    "posters",
+    "postmaker.dev",
+    "poster maker",
+    "poster maker app",
+    "poster maker web",
+    "poster design",
+    "poster creator",
+    "poster design tool",
+    "poster",
+    "web"
+  ];
+
 export const metadata: Metadata = {
   title: "Postmaker.dev",
   description: "iClasser PosterMaker",
+  keywords: keyworsSeo,
 };
 
 export default function RootLayout({
