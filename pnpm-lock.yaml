@@ -176,6 +176,9 @@ importers:
 
   packages/web-ui:
     dependencies:
+      html-to-image:
+        specifier: ^1.11.13
+        version: 1.11.13
       lucide-react:
         specifier: ^0.536.0
         version: 0.536.0(react@19.1.0)

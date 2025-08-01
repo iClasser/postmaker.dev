@@ -14,4 +14,4 @@ For instance you want to install `react-markdown` only available for @repo/web-u
 Installing dev dependancy `@repo/tailwind-config` for `apps/web`
 > pnpm add @repo/tailwind-config --save-dev --filter=web
 
-pnpm add lucide-react --filter=@repo/web-ui --filter=web
+pnpm add @repo/tailwind-config --save-dev --filter=web

@@ -1,9 +1,8 @@
 "use client";
-import { Button } from "@repo/ui/button";
+// import { Button } from "@repo/ui/button";
 import { MarkdownQuizPreview } from "@repo/ui/MarkdownQuizPreview";
 import { MainHomeLayout } from "@repo/web-ui/layout";
 import { useEffect, useState } from "react";
-import * as htmlToImage from "html-to-image";
 const STORAGE_KEY = "markdownQuizPreviewSettings";
 const tabs = [
   {
@@ -33,15 +32,15 @@ const QuestionAnswer = () => {
 function sayHi() {
   console.log(name);
   console.log(age);
-  var name = 'Lydia';
+  var name = 'Jane';
   let age = 21;
 }
 
 sayHi();
 \`\`\`
 
-- A: \`Lydia\` and \`undefined\`
-- B: \`Lydia\` and \`ReferenceError\`
+- A: \`Jane\` and \`undefined\`
+- B: \`Jane\` and \`ReferenceError\`
 - C: \`ReferenceError\` and \`21\`
 - D: \`undefined\` and \`ReferenceError\`
 `);
@@ -122,6 +121,7 @@ sayHi();
 
   return (
     <div className="p-4 flex md:flex-row flex-col gap-2 w-full">
+      
       <div
         style={{
           minWidth: "300px",
@@ -200,28 +200,6 @@ sayHi();
             className="w-full"
           />
         </div>
-        <Button
-          disabled={!mdx}
-          className="mt-2 bg-black text-white  p-2 rounded-md cursor-pointer"
-          onClick={() => {
-            // download the markdown quiz preview as a PNG
-            const element = document.querySelector(".root-card");
-            if (!element) return;
-            htmlToImage
-              .toPng(element as HTMLElement)
-              .then((dataUrl) => {
-                const link = document.createElement("a");
-                link.download = "quiz-preview.png";
-                link.href = dataUrl;
-                link.click();
-              })
-              .catch((error) => {
-                console.error("Error downloading image:", error);
-              });
-          }}
-        >
-          Download as png
-        </Button>
       </div>
       {/* Resizable Preview Panel */}
       <div

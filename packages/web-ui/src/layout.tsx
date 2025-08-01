@@ -1,5 +1,6 @@
 import { GithubIcon } from "lucide-react";
 import { type JSX } from "react";
+import * as htmlToImage from "html-to-image";
 
 export function Footer({
   className,
@@ -84,6 +85,30 @@ export function Header({
           ))}
         </div>
       </div>
+      <button
+        style={{
+          marginRight: "20px",
+        }}
+        className="bg-black text-white  p-2 rounded-md cursor-pointer"
+        onClick={() => {
+          // download the markdown quiz preview as a PNG
+          const element = document.querySelector(".root-card");
+          if (!element) return;
+          htmlToImage
+            .toPng(element as HTMLElement)
+            .then((dataUrl: any) => {
+              const link = document.createElement("a");
+              link.download = "quiz-preview.png";
+              link.href = dataUrl;
+              link.click();
+            })
+            .catch((error: any) => {
+              console.error("Error downloading image:", error);
+            });
+        }}
+      >
+        Download as png
+      </button>
       <div className="contribute-container">
         <a
           href="https://github.com/iClasser/postmaker.dev.git"
@@ -95,7 +120,6 @@ export function Header({
           <span>
             <GithubIcon className="w-8 h-8 inline-block" />
           </span>
-
         </a>
       </div>
     </header>
