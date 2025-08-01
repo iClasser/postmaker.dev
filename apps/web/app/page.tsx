@@ -46,7 +46,7 @@ sayHi();
 - D: \`undefined\` and \`ReferenceError\`
 `);
 
-  const [previewWidth, setPreviewWidth] = useState(50);
+  const [previewWidth, setPreviewWidth] = useState(100);
   const [innerPaddingX, setInnerPaddingX] = useState(0);
   const [innerPaddingY, setInnerPaddingY] = useState(0);
   const [pageName, setPageName] = useState("@postmaker.dev");
