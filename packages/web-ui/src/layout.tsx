@@ -1,4 +1,4 @@
-import { GitBranch } from "lucide-react";
+import { GitBranch, Instagram } from "lucide-react";
 import { type JSX } from "react";
 import * as htmlToImage from "html-to-image";
 
@@ -173,8 +173,22 @@ export function MainHomeLayout({
       <main className="min-h-screen">{children}</main>
       <Footer />
       <div className="">
-        <div className="flex justify-center items-center mt-4 p-4">
+        <div className="flex justify-center items-center gap-4 mt-4 p-4">
           <ContributeSection className="" />
+          <div>
+            <a 
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              textDecoration: "none",
+              color: "gray",
+            }}
+            className="flex items-center gap-[4px]"
+            href="https://instagram.com/postmaker.dev" target="_blank" rel="noopener noreferrer">
+              <Instagram className="w-6 h-6" /> <span>postmaker.dev</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

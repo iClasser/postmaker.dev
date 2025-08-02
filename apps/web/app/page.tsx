@@ -49,6 +49,8 @@ sayHi();
   const [previewWidth, setPreviewWidth] = useState(100);
   const [innerPaddingX, setInnerPaddingX] = useState(0);
   const [innerPaddingY, setInnerPaddingY] = useState(0);
+  const [borderRadius, setBorderRadius] = useState(0);
+  const [hasCardBorder, setHasCardBorder] = useState(false);
   const [pageName, setPageName] = useState("@postmaker.dev");
 
   const [logoUrlLabel, setLogoUrlLabel] = useState(
@@ -87,6 +89,8 @@ sayHi();
           pageName,
           logoUrl,
           logoUrlLabel,
+          borderRadius,
+          hasCardBorder,
         } = JSON.parse(saved);
         if (typeof previewWidth === "number") setPreviewWidth(previewWidth);
         if (typeof innerPaddingX === "number") setInnerPaddingX(innerPaddingX);
@@ -94,6 +98,8 @@ sayHi();
         if (typeof pageName === "string") setPageName(pageName);
         if (typeof logoUrl === "string") setLogoUrl(logoUrl);
         if (typeof logoUrlLabel === "string") setLogoUrlLabel(logoUrlLabel);
+        if (typeof borderRadius === "number") setBorderRadius(borderRadius);
+        if (typeof hasCardBorder === "boolean") setHasCardBorder(hasCardBorder);
       } catch {}
     }
   }, []);
@@ -109,6 +115,8 @@ sayHi();
         pageName,
         logoUrl,
         logoUrlLabel,
+        borderRadius,
+        hasCardBorder,
       })
     );
   }, [
@@ -118,6 +126,8 @@ sayHi();
     pageName,
     logoUrl,
     logoUrlLabel,
+    borderRadius,
+    hasCardBorder,
   ]);
 
   return (
@@ -176,6 +186,34 @@ sayHi();
         <div className="flex flex-col mt-4 border p-2 rounded-md">
           {/* Slider */}
           <label className="block mb-2">
+            Border Radius: {borderRadius}px
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="50"
+            value={borderRadius}
+            onChange={(e) => setBorderRadius(Number(e.target.value))}
+            className="w-full"
+          />
+        </div>
+
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Checkbox for card border */}
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={hasCardBorder}
+              onChange={(e) => setHasCardBorder(e.target.checked)}
+              className="mr-2"
+            />
+            Has Card Border
+          </label>
+        </div>
+
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Slider */}
+          <label className="block mb-2">
             Inner Padding X: {innerPaddingX}px
           </label>
           <input
@@ -231,8 +269,11 @@ sayHi();
                   paddingBottom: `${innerPaddingY}px`,
                 }
               : {}),
+              ...(borderRadius ? { borderRadius: `${borderRadius}px` } : {})
           }}
-          classNameRoot={`bg-gray-200 w-full rounded-xl border p-6 shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} ${borderColor}
+          classNameRoot={`w-full ${
+            hasCardBorder ? "border" : ""
+          } p-6 shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} ${borderColor}
           aspect-ratio[4/3] w-full`}
           classNameMarkdown={`prose max-w-none prose-pre:bg-transparent prose-code:before:hidden prose-code:after:hidden`}
         />

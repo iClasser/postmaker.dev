@@ -30,7 +30,7 @@ export const MarkdownQuizPreview: React.FC<MarkdownQuizPreviewProps> = ({
 }) => {
   return (
     <div className={`${classNameRoot} root-card`} style={styles}>
-      {(logoUrl || logoUrlLabel) ? (
+      {logoUrl || logoUrlLabel ? (
         <div className="logo-container">
           <div
             style={{
