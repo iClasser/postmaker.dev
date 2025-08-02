@@ -16,7 +16,7 @@ export function DownloadButton({
       .toPng(element as HTMLElement)
       .then((dataUrl: any) => {
         const link = document.createElement("a");
-        link.download = "quiz-preview.png";
+        link.download = "postmaker.dev.png";
         link.href = dataUrl;
         link.click();
       })
