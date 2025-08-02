@@ -7,10 +7,13 @@ Helper app for making social media posts.
 https://postmaker.dev
 
 # Run locally
+> pnpm install
+> pnpm build
+> pnpm dev
 
-> > pnpm install
-> > pnpm build
-> > pnpm dev
+# Prerequisites
+1. Node >=18 (22 recommended)
+2. pnpm
 
 # Contribution
 
@@ -18,12 +21,9 @@ All contributions are welcome
 
 ## Contributors ✨
 
-<table border='0'>
-  <tr>
-    <td align="center"><a href="https://github.com/iclasser"><img style='border-radius:100%;' src="https://github.com/iclasser.png" width="100px;" alt=""/><br /><sub><b>iclasser</b></sub></a></td>
-    <td align="center"><a href="https://github.com/hmdroh"><img style='border-radius:100%;' src="https://github.com/hmdroh.png" width="100px;" alt=""/><br /><sub><b>hmdroh</b></sub></a></td>
-  </tr>
-</table>
+<a href="https://github.com/iClasser/postmaker.dev/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=iClasser/postmaker.dev" />
+</a>
 
 # License
 
