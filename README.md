@@ -20,8 +20,18 @@ All contributions are welcome
 
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/hmdroh"><img src="https://github.com/iclasser.png" width="100px;" alt=""/><br /><sub><b>iclasser</b></sub></a></td>
-    <td align="center"><a href="https://github.com/iclasser"><img src="https://github.com/hmdroh.png" width="100px;" alt=""/><br /><sub><b>hmdroh</b></sub></a></td>
+    <td align="center">
+    <a href="https://github.com/iclasser">
+        <img src="https://github.com/iclasser.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>iclasser</b></sub>
+    </a>
+    </td>
+    <a href="https://github.com/hmdroh">
+        <img src="https://github.com/hmdroh.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>hmdroh</b></sub>
+    </a>
   </tr>
 </table>
 
