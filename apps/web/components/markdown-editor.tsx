@@ -35,6 +35,7 @@ sayHi();
   const [innerPaddingY, setInnerPaddingY] = useState(0);
   const [borderRadius, setBorderRadius] = useState(0);
   const [hasCardBorder, setHasCardBorder] = useState(false);
+  const [isRtl, setIsRtl] = useState(false);
   const [pageName, setPageName] = useState("@postmaker.dev");
 
   const [logoUrlLabel, setLogoUrlLabel] = useState(
@@ -75,6 +76,7 @@ sayHi();
           logoUrlLabel,
           borderRadius,
           hasCardBorder,
+          isRtl,
         } = JSON.parse(saved);
         if (typeof previewWidth === "number") setPreviewWidth(previewWidth);
         if (typeof innerPaddingX === "number") setInnerPaddingX(innerPaddingX);
@@ -84,6 +86,7 @@ sayHi();
         if (typeof logoUrlLabel === "string") setLogoUrlLabel(logoUrlLabel);
         if (typeof borderRadius === "number") setBorderRadius(borderRadius);
         if (typeof hasCardBorder === "boolean") setHasCardBorder(hasCardBorder);
+        if (typeof isRtl === "boolean") setIsRtl(isRtl);
       } catch {}
     }
   }, []);
@@ -101,6 +104,7 @@ sayHi();
         logoUrlLabel,
         borderRadius,
         hasCardBorder,
+        isRtl,
       })
     );
   }, [
@@ -112,6 +116,7 @@ sayHi();
     logoUrlLabel,
     borderRadius,
     hasCardBorder,
+    isRtl,
   ]);
 
   return (
@@ -194,6 +199,18 @@ sayHi();
             Has Card Border
           </label>
         </div>
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Checkbox for RTL */}
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={isRtl}
+              onChange={(e) => setIsRtl(e.target.checked)}
+              className="mr-2"
+            />
+            Is RTL
+          </label>
+        </div>
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
           {/* Slider */}
@@ -241,6 +258,7 @@ sayHi();
           pageName={pageName}
           markdown={mdx}
           styles={{
+            direction: isRtl ? "rtl" : "ltr",
             backgroundColor: "black",
             color: "white",
             ...(innerPaddingX

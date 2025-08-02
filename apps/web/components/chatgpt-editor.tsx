@@ -19,6 +19,7 @@ export default function ChatgptEditor(){
   const [hasCardBorder, setHasCardBorder] = useState(false);
   const [title, setTitle] = useState("Act as a Food Critic");
   const [showChatgpt, setShowChatgpt] = useState(true);
+  const [isRtl, setIsRtl] = useState(false);
   const [pageName, setPageName] = useState("@postmaker.dev");
 
   const [logoUrlLabel, setLogoUrlLabel] = useState(
@@ -61,6 +62,7 @@ export default function ChatgptEditor(){
           hasCardBorder,
           showChatgpt,
           title,
+          isRtl,
         } = JSON.parse(saved);
         if (typeof previewWidth === "number") setPreviewWidth(previewWidth);
         if (typeof innerPaddingX === "number") setInnerPaddingX(innerPaddingX);
@@ -72,6 +74,7 @@ export default function ChatgptEditor(){
         if (typeof hasCardBorder === "boolean") setHasCardBorder(hasCardBorder);
         if (typeof showChatgpt === "boolean") setShowChatgpt(showChatgpt);
         if (typeof title === "string") setTitle(title);
+        if (typeof isRtl === "boolean") setIsRtl(isRtl);
       } catch {}
     }
   }, []);
@@ -91,6 +94,7 @@ export default function ChatgptEditor(){
         hasCardBorder,
         showChatgpt,
         title,
+        isRtl,
       })
     );
   }, [
@@ -104,6 +108,7 @@ export default function ChatgptEditor(){
     hasCardBorder,
     showChatgpt,
     title,
+    isRtl,
   ]);
 
   return (
@@ -194,7 +199,7 @@ export default function ChatgptEditor(){
           </label>
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Checkbox for card border */}
+          {/* Checkbox */}
           <label className="flex items-center">
             <input
               type="checkbox"
@@ -205,6 +210,19 @@ export default function ChatgptEditor(){
             Show ChatGPT
           </label>
         </div>
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Checkbox */}
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={isRtl}
+              onChange={(e) => setIsRtl(e.target.checked)}
+              className="mr-2"
+            />
+            Is RTL
+          </label>
+        </div>
+
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
           {/* Slider */}
@@ -254,6 +272,7 @@ export default function ChatgptEditor(){
           text={text}
           showChatgpt={showChatgpt}
           styles={{
+            direction: isRtl ? "rtl" : "ltr",
             backgroundColor: "white",
             color: "black",
             ...(innerPaddingX
