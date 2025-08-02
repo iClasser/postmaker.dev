@@ -241,6 +241,8 @@ sayHi();
           pageName={pageName}
           markdown={mdx}
           styles={{
+            backgroundColor: "black",
+            color: "white",
             ...(innerPaddingX
               ? {
                   paddingLeft: `${innerPaddingX}px`,
