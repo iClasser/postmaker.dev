@@ -1,40 +1,23 @@
 "use client";
-import { MarkdownPreview } from "@repo/ui/markdown-preview/markdown-preview";
+import { ChatgptPreview } from "@repo/ui/chatgpt-preview/chatgpt-preview";
 import { useEffect, useState } from "react";
 import { DownloadButton } from "@repo/web-ui/download-button";
 
-const STORAGE_KEY = "markdownCard";
+const STORAGE_KEY = "chatgptCard";
 
 const cardBgColor = "bg-white";
 const textColor = "text-gray-900";
 const borderColor = "border-gray-300";
 
-export default function QuizMarkdownEditor(){
-  const [mdx, setMdx] = useState(`
-###### 1. What's the output?
-
-\`\`\`javascript
-function sayHi() {
-  console.log(name);
-  console.log(age);
-  var name = 'Jane';
-  let age = 21;
-}
-
-sayHi();
-\`\`\`
-
-- A: \`Jane\` and \`undefined\`
-- B: \`Jane\` and \`ReferenceError\`
-- C: \`ReferenceError\` and \`21\`
-- D: \`undefined\` and \`ReferenceError\`
-`);
+export default function ChatgptEditor(){
+  const [text, setText] = useState(`prompt goes here...`);
 
   const [previewWidth, setPreviewWidth] = useState(100);
-  const [innerPaddingX, setInnerPaddingX] = useState(0);
-  const [innerPaddingY, setInnerPaddingY] = useState(0);
+  const [innerPaddingX, setInnerPaddingX] = useState(30);
+  const [innerPaddingY, setInnerPaddingY] = useState(50);
   const [borderRadius, setBorderRadius] = useState(0);
   const [hasCardBorder, setHasCardBorder] = useState(false);
+  const [showChatgpt, setShowChatgpt] = useState(false);
   const [pageName, setPageName] = useState("@postmaker.dev");
 
   const [logoUrlLabel, setLogoUrlLabel] = useState(
@@ -123,7 +106,7 @@ sayHi();
         }}
         className="min-h-screen"
       >
-        <h2>Markdown Card</h2>
+        <h2>ChatGPT Card</h2>
         <p>Page Name:</p>
         <input
           className="w-full px-2 border rounded-md"
@@ -145,11 +128,11 @@ sayHi();
           onChange={(e) => setLogoUrlLabel(e.target.value)}
           placeholder="Enter logo URL label..."
         />
-        <p>Paste Markdown:</p>
+        <p>Your prompt:</p>
         <textarea
           className="w-full h-64 px-2 border rounded-md"
-          value={mdx}
-          onChange={(e) => setMdx(e.target.value)}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
           placeholder="Paste your markdown here..."
         />
 
@@ -194,6 +177,18 @@ sayHi();
             Has Card Border
           </label>
         </div>
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Checkbox for card border */}
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={showChatgpt}
+              onChange={(e) => setShowChatgpt(e.target.checked)}
+              className="mr-2"
+            />
+            Show ChatGPT
+          </label>
+        </div>
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
           {/* Slider */}
@@ -203,7 +198,7 @@ sayHi();
           <input
             type="range"
             min="0"
-            max="100"
+            max="150"
             value={innerPaddingX}
             onChange={(e) => setInnerPaddingX(Number(e.target.value))}
             className="w-full"
@@ -217,7 +212,7 @@ sayHi();
           <input
             type="range"
             min="0"
-            max="100"
+            max="150"
             value={innerPaddingY}
             onChange={(e) => setInnerPaddingY(Number(e.target.value))}
             className="w-full"
@@ -235,11 +230,12 @@ sayHi();
         onMouseDown={handleDragStart}
         className="m-auto w-full transition-all duration-200 preview-right-panel"
       >
-        <MarkdownPreview
+        <ChatgptPreview
           logoUrl={logoUrl}
           logoUrlLabel={logoUrlLabel}
           pageName={pageName}
-          markdown={mdx}
+          text={text}
+          showChatgpt={showChatgpt}
           styles={{
             ...(innerPaddingX
               ? {
