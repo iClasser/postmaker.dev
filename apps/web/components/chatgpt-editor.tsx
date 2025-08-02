@@ -254,6 +254,8 @@ export default function ChatgptEditor(){
           text={text}
           showChatgpt={showChatgpt}
           styles={{
+            backgroundColor: "white",
+            color: "black",
             ...(innerPaddingX
               ? {
                   paddingLeft: `${innerPaddingX}px`,
