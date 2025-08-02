@@ -1,6 +1,9 @@
-# hmdohr Postmaker.dev
+# Postmaker.dev
 
-Helper app for making social media posts.
+Helper app for making social media posts, backed by iClasser.
+
+<a href="https://github.com/iClasser/postmaker.dev/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/iClasser/postmaker.dev?color=success"></a>
+
 
 # Checkout
 
