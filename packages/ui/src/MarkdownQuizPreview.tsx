@@ -1,7 +1,7 @@
-// packages/ui/src/MarkdownQuizPreview.tsx
 "use client";
 
 import React from "react";
+import { DOWNLOAD_CARD_CLASS } from "@repo/constants";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -29,7 +29,7 @@ export const MarkdownQuizPreview: React.FC<MarkdownQuizPreviewProps> = ({
   // classNameMarkdown = '',
 }) => {
   return (
-    <div className={`${classNameRoot} root-card`} style={styles}>
+    <div className={`${classNameRoot} ${DOWNLOAD_CARD_CLASS}`} style={styles}>
       {logoUrl || logoUrlLabel ? (
         <div className="logo-container">
           <div
@@ -56,7 +56,6 @@ export const MarkdownQuizPreview: React.FC<MarkdownQuizPreviewProps> = ({
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
-        // className={classNameMarkdown}
       >
         {markdown}
       </ReactMarkdown>

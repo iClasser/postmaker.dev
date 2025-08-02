@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
+    "@repo/constants": "workspace:*",
     "highlight.js": "^11.11.1",
     "html-to-image": "^1.11.13",
     "lucide-react": "^0.536.0",

@@ -1,0 +1,13 @@
+{
+  "name": "@repo/constants",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./index.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.37.0"
+  }
+}

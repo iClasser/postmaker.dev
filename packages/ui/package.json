@@ -20,6 +20,7 @@
     "typescript": "5.8.2"
   },
   "dependencies": {
+    "@repo/constants": "workspace:*",
     "highlight.js": "^11.11.1",
     "html-to-image": "^1.11.13",
     "react": "^19.1.0",
