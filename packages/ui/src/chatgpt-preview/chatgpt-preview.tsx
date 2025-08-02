@@ -5,6 +5,7 @@ import { CardContainer } from "../layouts/card-container";
 import "./chatgpt-preview.style.css";
 
 interface ChatgptPreviewProps {
+  title?: string;
   text: string;
   className?: string;
   styles?: React.CSSProperties;
@@ -15,6 +16,7 @@ interface ChatgptPreviewProps {
 }
 
 export const ChatgptPreview: React.FC<ChatgptPreviewProps> = ({
+  title = "",
   text,
   className = "",
   styles = {},
@@ -32,7 +34,8 @@ export const ChatgptPreview: React.FC<ChatgptPreviewProps> = ({
       logoUrlLabel={logoUrlLabel}
       lightMode={true}
     >
-      {showChatgpt ? (<div className='chatgpt-header'>ChatGPT</div>) : null}
+      {title ? (<div className='chatgpt-header-title'>{title}</div>) : null}
+      {showChatgpt ? (<div className='chatgpt-header'>ChatGPT Prompt</div>) : null}
       <ChatGptText text={text} />
     </CardContainer>
   );

@@ -10,14 +10,15 @@ const textColor = "text-gray-900";
 const borderColor = "border-gray-300";
 
 export default function ChatgptEditor(){
-  const [text, setText] = useState(`prompt goes here...`);
+  const [text, setText] = useState(`I want you to act as a food critic. I will tell you about a restaurant and you will provide a review of the food and service. You should only reply with your review, and nothing else. Do not write explanations. My first request is "I visited a new Italian restaurant last night. Can you provide a review?"`);
 
   const [previewWidth, setPreviewWidth] = useState(100);
   const [innerPaddingX, setInnerPaddingX] = useState(30);
   const [innerPaddingY, setInnerPaddingY] = useState(50);
   const [borderRadius, setBorderRadius] = useState(0);
   const [hasCardBorder, setHasCardBorder] = useState(false);
-  const [showChatgpt, setShowChatgpt] = useState(false);
+  const [title, setTitle] = useState("Act as a Food Critic");
+  const [showChatgpt, setShowChatgpt] = useState(true);
   const [pageName, setPageName] = useState("@postmaker.dev");
 
   const [logoUrlLabel, setLogoUrlLabel] = useState(
@@ -58,6 +59,8 @@ export default function ChatgptEditor(){
           logoUrlLabel,
           borderRadius,
           hasCardBorder,
+          showChatgpt,
+          title,
         } = JSON.parse(saved);
         if (typeof previewWidth === "number") setPreviewWidth(previewWidth);
         if (typeof innerPaddingX === "number") setInnerPaddingX(innerPaddingX);
@@ -67,6 +70,8 @@ export default function ChatgptEditor(){
         if (typeof logoUrlLabel === "string") setLogoUrlLabel(logoUrlLabel);
         if (typeof borderRadius === "number") setBorderRadius(borderRadius);
         if (typeof hasCardBorder === "boolean") setHasCardBorder(hasCardBorder);
+        if (typeof showChatgpt === "boolean") setShowChatgpt(showChatgpt);
+        if (typeof title === "string") setTitle(title);
       } catch {}
     }
   }, []);
@@ -84,6 +89,8 @@ export default function ChatgptEditor(){
         logoUrlLabel,
         borderRadius,
         hasCardBorder,
+        showChatgpt,
+        title,
       })
     );
   }, [
@@ -95,6 +102,8 @@ export default function ChatgptEditor(){
     logoUrlLabel,
     borderRadius,
     hasCardBorder,
+    showChatgpt,
+    title,
   ]);
 
   return (
@@ -127,6 +136,13 @@ export default function ChatgptEditor(){
           value={logoUrlLabel}
           onChange={(e) => setLogoUrlLabel(e.target.value)}
           placeholder="Enter logo URL label..."
+        />
+        <p>Title:</p>
+        <input
+          className="w-full px-2 border rounded-md"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Enter title..."
         />
         <p>Your prompt:</p>
         <textarea
@@ -234,6 +250,7 @@ export default function ChatgptEditor(){
           logoUrl={logoUrl}
           logoUrlLabel={logoUrlLabel}
           pageName={pageName}
+          title={title}
           text={text}
           showChatgpt={showChatgpt}
           styles={{
