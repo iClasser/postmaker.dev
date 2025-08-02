@@ -16,15 +16,14 @@ https://postmaker.dev
 2. pnpm
 
 # Contribution
-
-All contributions are welcome
-
-## Contributors ✨
 <a href="https://github.com/iClasser/postmaker.dev/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=iClasser/postmaker.dev" />
 </a>
 
 <br/>
+All contributions are welcome
+
+## Contributors ✨
 <a href="https://github.com/iClasser/postmaker.dev/graphs/contributors">
   <img alt="contributors" src="https://img.shields.io/badge/contributors-welcome-blueviolet?style=flat-square">
 </a>
