@@ -74,8 +74,8 @@ export default function QuizMarkdownEditor() {
   const [state, setState] = useState({
     previewHeightPixels: 540,
     previewWidthPixels: 540,
-    previewWidth: 540,
-    previewHeight: 540,
+    width: 540,
+    height: 540,
     innerPaddingX: 30,
     innerPaddingY: 50,
     scale: 1,
@@ -111,8 +111,8 @@ sayHi();
   const {
     previewHeightPixels,
     previewWidthPixels,
-    previewWidth,
-    previewHeight,
+    width: previewWidth,
+    height: previewHeight,
     innerPaddingX,
     innerPaddingY,
     pageName,
@@ -190,7 +190,7 @@ sayHi();
           <input
             type="range"
             min="20"
-            max="100"
+            max="1920"
             name="previewWidth"
             value={previewWidth}
             onChange={(e) =>
