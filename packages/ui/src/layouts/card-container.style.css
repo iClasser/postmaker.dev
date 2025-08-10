@@ -17,6 +17,7 @@
   position: absolute;
   right: 0;
   bottom: 0;
+  z-index: 100;
   padding: 20px;
   font-weight: lighter;
   font-size: 0.8em;
@@ -36,6 +37,7 @@
 .logo-container {
   position: absolute;
   right: 0;
+  z-index: 100;
   top: 0;
   padding: 20px;
 }

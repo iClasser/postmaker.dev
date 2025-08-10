@@ -12,8 +12,11 @@ export function DownloadButton({
     // download the markdown quiz preview as a PNG
     const element = document.querySelector(`.${DOWNLOAD_CARD_CLASS}`);
     if (!element) return;
+    // scale 2x for better quality
+    // add class scaleTwoX to the element temporarily
+    // element.classList.add("scaleTwoX")
     htmlToImage
-      .toPng(element as HTMLElement)
+      .toPng(element as HTMLElement, { quality: 1 })
       .then((dataUrl: any) => {
         const link = document.createElement("a");
         link.download = "postmaker.dev.png";
@@ -23,6 +26,8 @@ export function DownloadButton({
       .catch((error: any) => {
         console.error("Error downloading image:", error);
       });
+
+      // element.classList.remove("scaleTwoX");
   };
   return (
     <button

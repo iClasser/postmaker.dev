@@ -16,6 +16,7 @@ interface MarkdownPreviewProps {
   pageName?: string;
   logoUrl?: string;
   logoUrlLabel?: string;
+  scale?: number;
 }
 
 export const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
@@ -25,6 +26,7 @@ export const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
   pageName,
   logoUrl = "",
   logoUrlLabel = "",
+  scale = 1,
 }) => {
   return (
     <CardContainer
@@ -33,6 +35,7 @@ export const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
       pageName={pageName}
       logoUrl={logoUrl}
       logoUrlLabel={logoUrlLabel}
+      scale={scale}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
