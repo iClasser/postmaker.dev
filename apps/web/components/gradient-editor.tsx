@@ -67,6 +67,14 @@ const componentSocialMapping = {
   },
 };
 
+
+const gradientTypes = [
+  { label: "Default", value: "default" },
+  { label: "Nano", value: "nano" },
+  { label: "Mini", value: "mini" },
+  { label: "Pink", value: "pink" },
+];
+
 export default function GradientEditor() {
   const [loaded, setLoaded] = useState(false);
 
@@ -84,9 +92,10 @@ export default function GradientEditor() {
     hasCardBorder: false,
     isRtl: false,
 
-    title: "Title",
-    text: `Text"`,
+    title: "Postmaker.dev",
+    text: `Create Posts"`,
     rounded: true,
+    gradientType: "default",
     gradientWidth: 300,
     gradientHeight: 200,
   });
@@ -109,6 +118,7 @@ export default function GradientEditor() {
     exportScale,
     gradientWidth,
     gradientHeight,
+    gradientType,
   } = state;
 
   // Load from localStorage on mount
@@ -160,6 +170,23 @@ export default function GradientEditor() {
           onChange={(e) => setStateValue(e.target.name, e.target.value)}
           placeholder="Enter logo URL label..."
         />
+
+
+        {/* gradient types select */}
+        <p>Gradient Type:</p>
+        <select
+          className="w-full px-2 border rounded-md"
+          value={gradientType}
+          name="gradientType"
+          onChange={(e) => setStateValue(e.target.name, e.target.value)}
+        >
+          {gradientTypes.map((type) => (
+            <option key={type.value} value={type.value}>
+              {type.label}
+            </option>
+          ))}
+        </select>
+
         <p>Title:</p>
         <input
           className="w-full px-2 border rounded-md"
@@ -383,6 +410,7 @@ export default function GradientEditor() {
             gradientHeight={gradientHeight}
             rounded={rounded}
             scale={scale}
+            gradientType={gradientType}
             styles={{
               zIndex: 10,
               // scale: exportScale,
