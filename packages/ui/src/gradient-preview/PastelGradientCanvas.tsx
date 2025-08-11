@@ -9,12 +9,13 @@ export const PastelGradientCanvas = ({
   width?: number;
   height?: number;
 }) => {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+    if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    let animationFrameId;
+    let animationFrameId: number;
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -29,6 +30,11 @@ export const PastelGradientCanvas = ({
       time += 0.005; // Slow increment for ambient motion
       const w = canvas.width;
       const h = canvas.height;
+
+      if (!ctx) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
 
       ctx.clearRect(0, 0, w, h);
 
