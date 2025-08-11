@@ -94,11 +94,11 @@ export default function GradientEditor() {
     isRtl: false,
 
     title: "Postmaker.dev",
-    text: `Create Posts"`,
+    text: `Create Posts`,
     rounded: true,
     gradientType: "default",
-    gradientWidth: 300,
-    gradientHeight: 200,
+    gradientWidth: 0,
+    gradientHeight: 0,
     blurAmount: 0,
   });
 
@@ -330,10 +330,10 @@ export default function GradientEditor() {
           </label>
           <input
             type="range"
-            min="40"
+            min="0"
             name="gradientWidth"
             max="1920"
-            value={gradientWidth}
+            value={gradientWidth || 0}
             onChange={(e) =>
               setStateValue(e.target.name, Number(e.target.value))
             }
@@ -347,10 +347,10 @@ export default function GradientEditor() {
           </label>
           <input
             type="range"
-            min="40"
+            min="0"
             name="gradientHeight"
             max="1920"
-            value={gradientHeight}
+            value={gradientHeight || 0}
             onChange={(e) =>
               setStateValue(e.target.name, Number(e.target.value))
             }
