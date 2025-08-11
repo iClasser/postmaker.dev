@@ -163,3 +163,8 @@
     "Segoe UI Emoji",
     "Segoe UI Symbol";
 }
+
+
+.roboto-flex {
+  font-family: var(--font-roboto-flex), sans-serif;
+}

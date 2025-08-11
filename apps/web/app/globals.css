@@ -79,3 +79,7 @@
   width: fit-content;
   height: fit-content;
 }
+
+.roboto-flex {
+  font-family: var(--font-roboto-flex), sans-serif;
+}

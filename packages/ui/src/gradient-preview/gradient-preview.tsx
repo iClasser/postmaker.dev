@@ -3,17 +3,21 @@
 import React from "react";
 import { CardContainer } from "../layouts/card-container";
 import "./gradient-preview.style.css";
-import PastelGradientCanvas from "./PastelGradientCanvas";
+import { PastelGradientCanvas } from "./PastelGradientCanvas";
 
 interface GradientPreviewProps {
-  title?: string;
-  text: string;
   className?: string;
   styles?: React.CSSProperties;
   pageName?: string;
   logoUrl?: string;
   logoUrlLabel?: string;
-  showChatgpt?: boolean;
+  scale?: number;
+
+  rounded?: boolean;
+  title?: string;
+  text: string;
+  gradientWidth?: number;
+  gradientHeight?: number;
 }
 
 export const GradientPreview: React.FC<GradientPreviewProps> = ({
@@ -24,7 +28,10 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
   pageName,
   logoUrl = "",
   logoUrlLabel = "",
-  showChatgpt = false,
+  rounded = false,
+  scale = 1,
+  gradientWidth,
+  gradientHeight,
 }) => {
   return (
     <CardContainer
@@ -34,47 +41,47 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
       logoUrl={logoUrl}
       logoUrlLabel={logoUrlLabel}
       lightMode={true}
+      scale={scale}
     >
+      {title && <div
+        className="roboto-flex mb-4 text-center font-bold"
+        style={{
+          fontSize: "1.8rem",
+          color: "#000",
+        }}
+      >
+        {title}
+      </div>}
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: gradientHeight ? gradientHeight : 200,
+        marginBottom: "16px",
+      }}>
+        <PastelGradientCanvas 
+        width={gradientWidth}
+        height={gradientHeight}
+        rounded={rounded} />
+      </div>
       <div
         style={{
-          zIndex: 3,
-          position: "relative",
-          top: 0,
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: "auto",
           width: "100%",
           height: "100%",
         }}
       >
-        <div
+        {text && <div
+          className="roboto-flex text-center"
           style={{
-            position: "relative",
-            zIndex: 5,
-            fontSize: "24px",
             color: "#000",
-          }}
-        >
-          {title}
-        </div>
-        <div
-          style={{
-            position: "relative",
-            zIndex: 5,
-            background: "rgba(255, 255, 255, 0.8)",
-            borderRadius: "12px",
-            // height: "auto",
-            padding: "20px",
-            color: "#000",
+          fontSize: "1.2rem",
+
           }}
         >
           {text}
-        </div>
+        </div>}
       </div>
-      <PastelGradientCanvas />
     </CardContainer>
   );
 };

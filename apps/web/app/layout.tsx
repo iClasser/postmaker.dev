@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Roboto_Flex } from "next/font/google";
+
 import "./globals.css";
 
 const geistSans = localFont({
@@ -10,7 +12,10 @@ const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
 });
-
+const robotoFlex = Roboto_Flex({
+  subsets: ["latin"],
+  variable: "--font-roboto-flex",
+});
 const keyworsSeo = [
   "postermaker",
   "interactive",
@@ -65,7 +70,7 @@ export default function RootLayout({
           content="Create stunning posters with Postermaker.dev, the interactive poster maker app. Design your own posters easily with our web-based tool."
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${robotoFlex.variable}`}>
         {children}
       </body>
     </html>

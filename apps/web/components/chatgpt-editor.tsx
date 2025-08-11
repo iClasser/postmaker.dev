@@ -176,7 +176,7 @@ export default function ChatgptEditor() {
           value={text}
           name="text"
           onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Paste your markdown here..."
+          placeholder="Paste your prompt here..."
         />
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
