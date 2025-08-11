@@ -19,6 +19,7 @@ interface GradientPreviewProps {
   gradientWidth?: number;
   gradientHeight?: number;
   gradientType?: string;
+  blurAmount?: number;
 }
 
 export const GradientPreview: React.FC<GradientPreviewProps> = ({
@@ -34,6 +35,7 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
   gradientWidth,
   gradientHeight,
   gradientType = "default",
+  blurAmount = 0,
 }) => {
   return (
     <CardContainer
@@ -45,7 +47,10 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
       lightMode={true}
       scale={scale}
     >
-      {title && (
+      <div style={{
+        position: "relative",
+      }}>
+        {title && (
         <div
           className="roboto-flex mb-4 text-center font-bold"
           style={{
@@ -65,6 +70,7 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
             width: "100%",
             height: gradientHeight ? gradientHeight : 200,
             marginBottom: "16px",
+            filter: `blur(${blurAmount}px)`,
           }}
         >
           <PastelGradientCanvas
@@ -92,6 +98,7 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
             width: gradientWidth ? gradientWidth + "px" : "100%",
             height: gradientHeight ? gradientHeight + "px" : "100%",
             borderRadius: rounded ? "15px" : "0",
+            filter: `blur(${blurAmount}px)`,
           }}
           src="/gpt-5-nano-1.jpg"
           width={100}
@@ -117,6 +124,7 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
             width: gradientWidth ? gradientWidth + "px" : "100%",
             height: gradientHeight ? gradientHeight + "px" : "100%",
             borderRadius: rounded ? "15px" : "0",
+            filter: `blur(${blurAmount}px)`,
           }}
           src="/gpt-5-mini.jpg"
           width={100}
@@ -142,6 +150,7 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
             width: gradientWidth ? gradientWidth + "px" : "100%",
             height: gradientHeight ? gradientHeight + "px" : "100%",
             borderRadius: rounded ? "15px" : "0",
+            filter: `blur(${blurAmount}px)`,
           }}
           src="/gpt-5.jpg"
           width={100}
@@ -151,6 +160,33 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
       </div>)}
 
 
+{gradientType === "conic" && (
+        <div
+        style={{
+          display: "absolute",
+          inset: 0,
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: gradientHeight ? gradientHeight : 200,
+          marginBottom: "16px",
+        }}
+      >
+        <img
+          style={{
+            objectFit: "cover",
+            // mouse event none
+            pointerEvents: "none",
+            display: "inline-block",
+            width: gradientWidth ? gradientWidth + "px" : "100%",
+            height: gradientHeight ? gradientHeight + "px" : "100%",
+            borderRadius: rounded ? "15px" : "0",
+            filter: `blur(${blurAmount}px)`,
+          }}
+          src="/640.webp"
+          alt="Background"
+        />
+      </div>)}
 
 
       <div
@@ -170,6 +206,7 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
             {text}
           </div>
         )}
+      </div>
       </div>
     </CardContainer>
   );

@@ -73,6 +73,7 @@ const gradientTypes = [
   { label: "Nano", value: "nano" },
   { label: "Mini", value: "mini" },
   { label: "Pink", value: "pink" },
+  { label: "Conic", value: "conic" },
 ];
 
 export default function GradientEditor() {
@@ -98,6 +99,7 @@ export default function GradientEditor() {
     gradientType: "default",
     gradientWidth: 300,
     gradientHeight: 200,
+    blurAmount: 0,
   });
 
   const {
@@ -119,6 +121,7 @@ export default function GradientEditor() {
     gradientWidth,
     gradientHeight,
     gradientType,
+    blurAmount,
   } = state;
 
   // Load from localStorage on mount
@@ -178,7 +181,15 @@ export default function GradientEditor() {
           className="w-full px-2 border rounded-md"
           value={gradientType}
           name="gradientType"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
+          onChange={(e) => {
+            if (e.target.value === "conic") {
+              setStateValue("blurAmount", 40);
+            } else {
+              setStateValue("blurAmount", 0);
+            }
+              setStateValue(e.target.name, e.target.value);
+
+          }}
         >
           {gradientTypes.map((type) => (
             <option key={type.value} value={type.value}>
@@ -186,6 +197,20 @@ export default function GradientEditor() {
             </option>
           ))}
         </select>
+
+        {/* Blur Amount */}
+        <p>Blur Amount: {blurAmount}px</p>
+        <input
+          type="range"
+          min="0"
+          name="blurAmount"
+          max="100"
+          value={blurAmount || 0}
+          onChange={(e) =>
+            setStateValue(e.target.name, Number(e.target.value))
+          }
+          className="w-full"
+        />
 
         <p>Title:</p>
         <input
@@ -409,6 +434,7 @@ export default function GradientEditor() {
             gradientWidth={gradientWidth}
             gradientHeight={gradientHeight}
             rounded={rounded}
+            blurAmount={blurAmount}
             scale={scale}
             gradientType={gradientType}
             styles={{
