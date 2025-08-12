@@ -1,109 +1,112 @@
 "use client";
 import { GradientPreview } from "@repo/ui/gradient-preview/gradient-preview";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DownloadButton } from "@repo/web-ui/download-button";
-
-const STORAGE_KEY = "gradient-editor";
+import { CardSizeContext } from "@repo/ui/context/CardSizeContext";
+import SocialMediaController from "@repo/web-ui/SocialMediaController";
+const STORAGE_KEY = "gradient-editor-v1";
 
 const cardBgColor = "bg-white";
 const textColor = "text-gray-900";
 const borderColor = "border-gray-300";
 
-export default function GradientEditor(){
+const componentSocialMapping = {
+  instagramPost: {
+    width: 1080 / 2,
+    height: 1080 / 2,
+    innerPaddingY: 1080 / 10,
+    scale: 1,
+  },
+  instagramStory: {
+    width: 1080 / 2,
+    height: 1920 / 2,
+    innerPaddingY: 1920 / 8,
+    scale: 1,
+  },
+  twitterPost: {
+    width: 1200 / 2,
+    height: 675 / 2,
+    innerPaddingY: 0,
+    scale: 0.7,
+  },
+  twitterHeader: {
+    width: (1500 / 2) * 1.2,
+    height: (500 / 2) * 1.2,
+    innerPaddingY: 0,
+    scale: 0.7,
+  },
+  facebookPost: {
+    width: (1200 / 2) * 1.3,
+    height: (630 / 2) * 1.3,
+    innerPaddingY: 630 / 10,
+    scale: 1,
+  },
+  facebookCover: {
+    width: 820,
+    height: 312,
+    innerPaddingY: 312 / 10,
+    scale: 0.7,
+  },
+  dribbleShot: {
+    width: (800 / 2) * 1.5,
+    height: (600 / 2) * 1.5,
+    innerPaddingY: 600 / 10,
+    scale: 1,
+  },
+  linkedinPost: {
+    width: 1200 / 1.5,
+    height: 627 / 1.5,
+    innerPaddingY: 627 / 10,
+    scale: 1,
+  },
+  linkedinCover: {
+    width: 1584 / 1.5,
+    height: 396 / 1.5,
+    innerPaddingY: 10,
+    scale: 0.5,
+  },
+};
+
+
+const gradientTypes = [
+  { label: "Default", value: "default" },
+  { label: "Nano", value: "nano" },
+  { label: "Mini", value: "mini" },
+  { label: "Pink", value: "pink" },
+  { label: "Conic", value: "conic" },
+  { label: "Custom Image", value: "custom" },
+];
+
+export default function GradientEditor() {
   const [loaded, setLoaded] = useState(false);
 
-  const [text, setText] = useState(`I want you to act as a food critic. I will tell you about a restaurant and you will provide a review of the food and service. You should only reply with your review, and nothing else. Do not write explanations. My first request is "I visited a new Italian restaurant last night. Can you provide a review?"`);
+  const [state, setState] = useState({
+    width: 540,
+    height: 540,
+    innerPaddingX: 30,
+    innerPaddingY: 50,
+    scale: 1,
+    exportScale: 1,
+    pageName: "@postmaker.dev",
+    logoUrl: "/logo.svg",
+    logoUrlLabel: "Created with Postmaker.dev",
+    borderRadius: 0,
+    hasCardBorder: false,
+    isRtl: false,
+    customImage: "/logo.svg",
 
-  const [previewWidth, setPreviewWidth] = useState(100);
-  const [innerPaddingX, setInnerPaddingX] = useState(30);
-  const [innerPaddingY, setInnerPaddingY] = useState(50);
-  const [borderRadius, setBorderRadius] = useState(0);
-  const [hasCardBorder, setHasCardBorder] = useState(false);
-  const [title, setTitle] = useState("Act as a Food Critic");
-  const [showChatgpt, setShowChatgpt] = useState(true);
-  const [isRtl, setIsRtl] = useState(false);
-  const [pageName, setPageName] = useState("@postmaker.dev");
+    title: "Postmaker.dev",
+    text: `Create Posts`,
+    rounded: true,
+    gradientType: "default",
+    gradientWidth: 0,
+    gradientHeight: 0,
+    blurAmount: 0,
+  });
 
-  const [logoUrlLabel, setLogoUrlLabel] = useState(
-    "Created with Postmaker.dev"
-  );
-  const [logoUrl, setLogoUrl] = useState("/logo.svg");
-
-  const handleDragStart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const startX = e.clientX;
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      const newWidth = previewWidth + ((moveEvent.clientX - startX) / window.innerWidth) * 100;
-      setPreviewWidth(newWidth); // Limit width between 20% and 100%
-    };
-
-    const handleMouseUp = () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-  };
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    if (!loaded) {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const {
-          previewWidth,
-          innerPaddingX,
-          innerPaddingY,
-          pageName,
-          logoUrl,
-          logoUrlLabel,
-          borderRadius,
-          hasCardBorder,
-          showChatgpt,
-          title,
-          isRtl,
-        } = JSON.parse(saved);
-        if (typeof previewWidth === "number") setPreviewWidth(previewWidth);
-        if (typeof innerPaddingX === "number") setInnerPaddingX(innerPaddingX);
-        if (typeof innerPaddingY === "number") setInnerPaddingY(innerPaddingY);
-        if (typeof pageName === "string") setPageName(pageName);
-        if (typeof logoUrl === "string") setLogoUrl(logoUrl);
-        if (typeof logoUrlLabel === "string") setLogoUrlLabel(logoUrlLabel);
-        if (typeof borderRadius === "number") setBorderRadius(borderRadius);
-        if (typeof hasCardBorder === "boolean") setHasCardBorder(hasCardBorder);
-        if (typeof showChatgpt === "boolean") setShowChatgpt(showChatgpt);
-        if (typeof title === "string") setTitle(title);
-        if (typeof isRtl === "boolean") setIsRtl(isRtl);
-      } catch {}
-    }
-  }
-  setLoaded(true);
-  }, []);
-
-  // Save to localStorage whenever any value changes
-  useEffect(() => {
-    if (!loaded) return;
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        previewWidth,
-        innerPaddingX,
-        innerPaddingY,
-        pageName,
-        logoUrl,
-        logoUrlLabel,
-        borderRadius,
-        hasCardBorder,
-        showChatgpt,
-        title,
-        isRtl,
-      })
-    );
-  }, [
-    previewWidth,
+  const {
+    width: width,
+    height: height,
     innerPaddingX,
     innerPaddingY,
     pageName,
@@ -111,79 +114,200 @@ export default function GradientEditor(){
     logoUrlLabel,
     borderRadius,
     hasCardBorder,
-    showChatgpt,
-    title,
     isRtl,
-  ]);
+    title,
+    rounded,
+    text,
+    scale,
+    exportScale,
+    gradientWidth,
+    gradientHeight,
+    gradientType,
+    blurAmount,
+    customImage,
+  } = state;
+
+  // Load from localStorage on mount
+  // Save
+  useEffect(() => {
+    if (!loaded) return;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }, [loaded, state]);
+
+  // Save to localStorage whenever any value changes
+  // Load
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      setState(JSON.parse(saved));
+    }
+    setLoaded(true);
+  }, []);
+
+  const setStateValue = (key: string, value: any) => {
+    setState((prev) => ({ ...prev, [key]: value }));
+  };
 
   return (
     <div className="p-4 flex md:flex-row flex-col gap-2 w-full">
-      
-      <div
-        className="min-h-screen preview-left-panel"
-      >
-        <h2>ChatGPT Card</h2>
+      <div className="min-h-screen preview-left-panel">
+        <h2 className="preview-heading">Gradient Card</h2>
         <p>Page Name:</p>
         <input
           className="w-full px-2 border rounded-md"
           value={pageName}
-          onChange={(e) => setPageName(e.target.value)}
+          name="pageName"
+          onChange={(e) => setStateValue(e.target.name, e.target.value)}
           placeholder="Enter page name..."
         />
         <p>Logo URL:</p>
         <input
           className="w-full px-2 border rounded-md"
           value={logoUrl}
-          onChange={(e) => setLogoUrl(e.target.value)}
+          name="logoUrl"
+          onChange={(e) => setStateValue(e.target.name, e.target.value)}
           placeholder="Enter logo URL..."
         />
         <p>Logo URL Label:</p>
         <input
           className="w-full px-2 border rounded-md"
           value={logoUrlLabel}
-          onChange={(e) => setLogoUrlLabel(e.target.value)}
+          name="logoUrlLabel"
+          onChange={(e) => setStateValue(e.target.name, e.target.value)}
           placeholder="Enter logo URL label..."
         />
+
+
+        {/* gradient types select */}
+        <p>Gradient Type:</p>
+        <select
+          className="w-full px-2 border rounded-md"
+          value={gradientType}
+          name="gradientType"
+          onChange={(e) => {
+            if (e.target.value === "conic") {
+              setStateValue("blurAmount", 40);
+            } else {
+              setStateValue("blurAmount", 0);
+            }
+              setStateValue(e.target.name, e.target.value);
+
+          }}
+        >
+          {gradientTypes.map((type) => (
+            <option key={type.value} value={type.value}>
+              {type.label}
+            </option>
+          ))}
+        </select>
+ {gradientType === "custom" && (
+          <>
+            <p>Custom Image URL:</p>
+            <input
+              className="w-full px-2 border rounded-md"
+              value={customImage}
+              name="customImage"
+              onChange={(e) => setStateValue(e.target.name, e.target.value)}
+              placeholder="Enter custom image URL..."
+            />
+          </>
+        )}
+        {/* Blur Amount */}
+        <p>Blur Amount: {blurAmount}px</p>
+        <input
+          type="range"
+          min="0"
+          name="blurAmount"
+          max="100"
+          value={blurAmount || 0}
+          onChange={(e) =>
+            setStateValue(e.target.name, Number(e.target.value))
+          }
+          className="w-full"
+        />
+
+       
         <p>Title:</p>
         <input
           className="w-full px-2 border rounded-md"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          name="title"
+          onChange={(e) => setStateValue(e.target.name, e.target.value)}
           placeholder="Enter title..."
         />
-        <p>Your prompt:</p>
-        <textarea
-          className="w-full h-64 px-2 border rounded-md"
+
+        <p>Subtitle:</p>
+        <input
+          className="w-full px-2 border rounded-md"
           value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Paste your markdown here..."
+          name="text"
+          onChange={(e) => setStateValue(e.target.name, e.target.value)}
+          placeholder="Enter subtitle..."
         />
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
           {/* Slider */}
           <label className="block mb-2">
-            Preview Width: {previewWidth.toFixed(2)}%
+            Preview Width: {width ? width : 0}px
           </label>
           <input
             type="range"
-            min="20"
-            max="100"
-            value={previewWidth}
-            onChange={(e) => setPreviewWidth(Number(e.target.value))}
+            min="40"
+            name="width"
+            max="1920"
+            value={width}
+            onChange={(e) =>
+              setStateValue(e.target.name, Number(e.target.value))
+            }
             className="w-full"
           />
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
           {/* Slider */}
           <label className="block mb-2">
-            Border Radius: {borderRadius}px
+            Preview Height: {height ? height : 0}px
+          </label>
+          <input
+            type="range"
+            min="40"
+            name="height"
+            max="1920"
+            value={height}
+            onChange={(e) =>
+              setStateValue(e.target.name, Number(e.target.value))
+            }
+            className="w-full"
+          />
+        </div>
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Scale */}
+          <label className="block mb-2">
+            Content Scale: {scale ? scale : 0}x
           </label>
           <input
             type="range"
             min="0"
+            name="scale"
+            max="300"
+            value={scale * 100}
+            onChange={(e) =>
+              setStateValue(e.target.name, Number(e.target.value) / 100)
+            }
+            className="w-full"
+          />
+        </div>
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Slider */}
+          <label className="block mb-2">Border Radius: {borderRadius}px</label>
+          <input
+            type="range"
+            min="0"
             max="50"
+            name="borderRadius"
             value={borderRadius}
-            onChange={(e) => setBorderRadius(Number(e.target.value))}
+            onChange={(e) =>
+              setStateValue(e.target.name, Number(e.target.value))
+            }
             className="w-full"
           />
         </div>
@@ -194,7 +318,8 @@ export default function GradientEditor(){
             <input
               type="checkbox"
               checked={hasCardBorder}
-              onChange={(e) => setHasCardBorder(e.target.checked)}
+              name="hasCardBorder"
+              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
               className="mr-2"
             />
             Has Card Border
@@ -205,26 +330,63 @@ export default function GradientEditor(){
           <label className="flex items-center">
             <input
               type="checkbox"
-              checked={showChatgpt}
-              onChange={(e) => setShowChatgpt(e.target.checked)}
+              checked={rounded}
+              name="rounded"
+              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
               className="mr-2"
             />
-            Show ChatGPT
+            Rounded Gradient
           </label>
         </div>
+
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Slider */}
+          <label className="block mb-2">
+            Gradient Width: {gradientWidth ? gradientWidth : 0}px
+          </label>
+          <input
+            type="range"
+            min="0"
+            name="gradientWidth"
+            max="1920"
+            value={gradientWidth || 0}
+            onChange={(e) =>
+              setStateValue(e.target.name, Number(e.target.value))
+            }
+            className="w-full"
+          />
+        </div>
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
+          {/* Slider */}
+          <label className="block mb-2">
+            Gradient Height: {gradientHeight ? gradientHeight : 0}px
+          </label>
+          <input
+            type="range"
+            min="0"
+            name="gradientHeight"
+            max="1920"
+            value={gradientHeight || 0}
+            onChange={(e) =>
+              setStateValue(e.target.name, Number(e.target.value))
+            }
+            className="w-full"
+          />
+        </div>
+
         <div className="flex flex-col mt-4 border p-2 rounded-md">
           {/* Checkbox */}
           <label className="flex items-center">
             <input
               type="checkbox"
               checked={isRtl}
-              onChange={(e) => setIsRtl(e.target.checked)}
+              name="isRtl"
+              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
               className="mr-2"
             />
             Is RTL
           </label>
         </div>
-
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
           {/* Slider */}
@@ -235,8 +397,11 @@ export default function GradientEditor(){
             type="range"
             min="0"
             max="150"
+            name="innerPaddingX"
             value={innerPaddingX}
-            onChange={(e) => setInnerPaddingX(Number(e.target.value))}
+            onChange={(e) =>
+              setStateValue(e.target.name, Number(e.target.value))
+            }
             className="w-full"
           />
         </div>
@@ -248,57 +413,76 @@ export default function GradientEditor(){
           <input
             type="range"
             min="0"
-            max="150"
+            max="1920"
             value={innerPaddingY}
-            onChange={(e) => setInnerPaddingY(Number(e.target.value))}
+            name="innerPaddingY"
+            onChange={(e) =>
+              setStateValue(e.target.name, Number(e.target.value))
+            }
             className="w-full"
           />
         </div>
       </div>
       {/* Resizable Preview Panel */}
-      <div
-        style={{
-          cursor: "ew-resize",
-          zIndex: 10,
-          background: "transparent",
-          width: `${previewWidth}%`,
-        }}
-        onMouseDown={handleDragStart}
-        className="w-full transition-all duration-200 preview-right-panel"
-      >
-        <GradientPreview
-          logoUrl={logoUrl}
-          logoUrlLabel={logoUrlLabel}
-          pageName={pageName}
-          title={title}
-          text={text}
-          showChatgpt={showChatgpt}
-          styles={{
-            direction: isRtl ? "rtl" : "ltr",
-            backgroundColor: "white",
-            color: "black",
-            ...(innerPaddingX
-              ? {
-                  paddingLeft: `${innerPaddingX}px`,
-                  paddingRight: `${innerPaddingX}px`,
-                }
-              : {}),
-            ...(innerPaddingY
-              ? {
-                  paddingTop: `${innerPaddingY}px`,
-                  paddingBottom: `${innerPaddingY}px`,
-                }
-              : {}),
-              ...(borderRadius ? { borderRadius: `${borderRadius}px` } : {})
-          }}
-          className={`w-full ${
-            hasCardBorder ? "border" : ""
-          } p-6 shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} ${borderColor}
-          aspect-ratio[4/3] w-full`}
+      <div className="preview-right-panel">
+        <SocialMediaController
+          setStateValue={setStateValue}
+          exportScale={exportScale}
+          CardSizeContext={CardSizeContext}
+          componentSocialMapping={componentSocialMapping}
         />
+        <div
+          style={{
+            zIndex: 10,
+            backgroundColor: "transparent",
+            width: `${width}px`,
+            height: `${height}px`,
+            overflow: "clip",
+          }}
+          className="transition-all duration-200 select-none preview-container-drag"
+        >
+          <GradientPreview
+            logoUrl={logoUrl}
+            logoUrlLabel={logoUrlLabel}
+            pageName={pageName}
+            title={title}
+            text={text}
+            gradientWidth={gradientWidth}
+            gradientHeight={gradientHeight}
+            rounded={rounded}
+            blurAmount={blurAmount}
+            scale={scale}
+            gradientType={gradientType}
+            customImage={customImage}
+            styles={{
+              zIndex: 10,
+              // scale: exportScale,
+              height: "100%",
+              direction: isRtl ? "rtl" : "ltr",
+              backgroundColor: "white",
+              color: "black",
+              ...(innerPaddingX
+                ? {
+                    paddingLeft: `${innerPaddingX}px`,
+                    paddingRight: `${innerPaddingX}px`,
+                  }
+                : {}),
+              ...(innerPaddingY
+                ? {
+                    paddingTop: `${innerPaddingY}px`,
+                    paddingBottom: `${innerPaddingY}px`,
+                  }
+                : {}),
+              ...(borderRadius ? { borderRadius: `${borderRadius}px` } : {}),
+            }}
+            className={`w-full ${
+              hasCardBorder ? "border" : ""
+            } p-6 shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} ${borderColor}
+          w-full`}
+          />
+        </div>
       </div>
       <DownloadButton className="show-mobile bg-black shadow-2xl text-white p-4 rounded-md hover:bg-sky-700" />
-
     </div>
   );
-};
+}

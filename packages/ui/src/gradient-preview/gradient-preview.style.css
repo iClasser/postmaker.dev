@@ -7,3 +7,7 @@
 :root {
   --text-primary: #0d0d0d;
 }
+
+.roboto-flex {
+  font-family: var(--font-roboto-flex), sans-serif;
+}
