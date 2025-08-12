@@ -74,6 +74,7 @@ const gradientTypes = [
   { label: "Mini", value: "mini" },
   { label: "Pink", value: "pink" },
   { label: "Conic", value: "conic" },
+  { label: "Custom Image", value: "custom" },
 ];
 
 export default function GradientEditor() {
@@ -92,6 +93,7 @@ export default function GradientEditor() {
     borderRadius: 0,
     hasCardBorder: false,
     isRtl: false,
+    customImage: "/logo.svg",
 
     title: "Postmaker.dev",
     text: `Create Posts`,
@@ -122,6 +124,7 @@ export default function GradientEditor() {
     gradientHeight,
     gradientType,
     blurAmount,
+    customImage,
   } = state;
 
   // Load from localStorage on mount
@@ -197,7 +200,18 @@ export default function GradientEditor() {
             </option>
           ))}
         </select>
-
+ {gradientType === "custom" && (
+          <>
+            <p>Custom Image URL:</p>
+            <input
+              className="w-full px-2 border rounded-md"
+              value={customImage}
+              name="customImage"
+              onChange={(e) => setStateValue(e.target.name, e.target.value)}
+              placeholder="Enter custom image URL..."
+            />
+          </>
+        )}
         {/* Blur Amount */}
         <p>Blur Amount: {blurAmount}px</p>
         <input
@@ -212,6 +226,7 @@ export default function GradientEditor() {
           className="w-full"
         />
 
+       
         <p>Title:</p>
         <input
           className="w-full px-2 border rounded-md"
@@ -220,6 +235,7 @@ export default function GradientEditor() {
           onChange={(e) => setStateValue(e.target.name, e.target.value)}
           placeholder="Enter title..."
         />
+
         <p>Subtitle:</p>
         <input
           className="w-full px-2 border rounded-md"
@@ -437,6 +453,7 @@ export default function GradientEditor() {
             blurAmount={blurAmount}
             scale={scale}
             gradientType={gradientType}
+            customImage={customImage}
             styles={{
               zIndex: 10,
               // scale: exportScale,

@@ -20,6 +20,7 @@ interface GradientPreviewProps {
   gradientHeight?: number;
   gradientType?: string;
   blurAmount?: number;
+  customImage: string;
 }
 
 export const GradientPreview: React.FC<GradientPreviewProps> = ({
@@ -36,6 +37,7 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
   gradientHeight,
   gradientType = "default",
   blurAmount = 0,
+  customImage,
 }) => {
   return (
     <CardContainer
@@ -47,166 +49,198 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
       lightMode={true}
       scale={scale}
     >
-      <div style={{
-        position: "relative",
-      }}>
-        {title && (
-        <div
-          className="roboto-flex mb-4 text-center font-bold"
-          style={{
-            fontSize: "1.8rem",
-            color: "#000",
-          }}
-        >
-          {title}
-        </div>
-      )}
-      {gradientType === "default" && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: gradientHeight ? gradientHeight : 200,
-            marginBottom: "16px",
-            filter: `blur(${blurAmount}px)`,
-          }}
-        >
-          <PastelGradientCanvas
-            width={gradientWidth}
-            height={gradientHeight}
-            rounded={rounded}
-          />
-        </div>
-      )}
-
-      {gradientType === "nano" && (
-        <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: gradientHeight ? gradientHeight : 200,
-          marginBottom: "16px",
-        }}
-      >
-        <img
-          style={{
-            objectFit: "cover",
-            width: gradientWidth ? gradientWidth + "px" : "100%",
-            height: gradientHeight ? gradientHeight + "px" : "100%",
-            borderRadius: rounded ? "15px" : "0",
-            filter: `blur(${blurAmount}px)`,
-          }}
-          src="/gpt-5-nano-1.jpg"
-          width={100}
-          height={100}
-          alt="Background"
-        />
-      </div>)}
-
-       {gradientType === "mini" && (
-        <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: gradientHeight ? gradientHeight : 200,
-          marginBottom: "16px",
-        }}
-      >
-        <img
-          style={{
-            objectFit: "cover",
-            width: gradientWidth ? gradientWidth + "px" : "100%",
-            height: gradientHeight ? gradientHeight + "px" : "100%",
-            borderRadius: rounded ? "15px" : "0",
-            filter: `blur(${blurAmount}px)`,
-          }}
-          src="/gpt-5-mini.jpg"
-          width={100}
-          height={100}
-          alt="Background"
-        />
-      </div>)}
-
-      {gradientType === "pink" && (
-        <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: gradientHeight ? gradientHeight : 200,
-          marginBottom: "16px",
-        }}
-      >
-        <img
-          style={{
-            objectFit: "cover",
-            width: gradientWidth ? gradientWidth + "px" : "100%",
-            height: gradientHeight ? gradientHeight + "px" : "100%",
-            borderRadius: rounded ? "15px" : "0",
-            filter: `blur(${blurAmount}px)`,
-          }}
-          src="/gpt-5.jpg"
-          width={100}
-          height={100}
-          alt="Background"
-        />
-      </div>)}
-
-
-{gradientType === "conic" && (
-        <div
-        style={{
-          display: "absolute",
-          inset: 0,
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: gradientHeight ? gradientHeight : 200,
-          marginBottom: "16px",
-        }}
-      >
-        <img
-          style={{
-            objectFit: "cover",
-            // mouse event none
-            pointerEvents: "none",
-            display: "inline-block",
-            width: gradientWidth ? gradientWidth + "px" : "100%",
-            height: gradientHeight ? gradientHeight + "px" : "100%",
-            borderRadius: rounded ? "15px" : "0",
-            filter: `blur(${blurAmount}px)`,
-          }}
-          src="/640.webp"
-          alt="Background"
-        />
-      </div>)}
-
-
       <div
         style={{
-          width: "100%",
-          height: "100%",
+          position: "relative",
         }}
       >
-        {text && (
+        {title && (
           <div
-            className="roboto-flex text-center"
+            className="roboto-flex mb-4 text-center font-bold"
             style={{
+              fontSize: "1.8rem",
               color: "#000",
-              fontSize: "1.2rem",
             }}
           >
-            {text}
+            {title}
           </div>
         )}
-      </div>
+        {gradientType === "default" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: gradientHeight ? gradientHeight : 200,
+              marginBottom: "16px",
+              filter: `blur(${blurAmount}px)`,
+            }}
+          >
+            <PastelGradientCanvas
+              width={gradientWidth}
+              height={gradientHeight}
+              rounded={rounded}
+            />
+          </div>
+        )}
+
+        {gradientType === "nano" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: gradientHeight ? gradientHeight : 200,
+              marginBottom: "16px",
+            }}
+          >
+            <img
+              style={{
+                objectFit: "cover",
+                width: gradientWidth ? gradientWidth + "px" : "100%",
+                height: gradientHeight ? gradientHeight + "px" : "100%",
+                borderRadius: rounded ? "15px" : "0",
+                filter: `blur(${blurAmount}px)`,
+              }}
+              src="/gpt-5-nano-1.jpg"
+              width={100}
+              height={100}
+              alt="Background"
+            />
+          </div>
+        )}
+
+        {gradientType === "mini" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: gradientHeight ? gradientHeight : 200,
+              marginBottom: "16px",
+            }}
+          >
+            <img
+              style={{
+                objectFit: "cover",
+                width: gradientWidth ? gradientWidth + "px" : "100%",
+                height: gradientHeight ? gradientHeight + "px" : "100%",
+                borderRadius: rounded ? "15px" : "0",
+                filter: `blur(${blurAmount}px)`,
+              }}
+              src="/gpt-5-mini.jpg"
+              width={100}
+              height={100}
+              alt="Background"
+            />
+          </div>
+        )}
+
+        {gradientType === "pink" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: gradientHeight ? gradientHeight : 200,
+              marginBottom: "16px",
+            }}
+          >
+            <img
+              style={{
+                objectFit: "cover",
+                width: gradientWidth ? gradientWidth + "px" : "100%",
+                height: gradientHeight ? gradientHeight + "px" : "100%",
+                borderRadius: rounded ? "15px" : "0",
+                filter: `blur(${blurAmount}px)`,
+              }}
+              src="/gpt-5.jpg"
+              width={100}
+              height={100}
+              alt="Background"
+            />
+          </div>
+        )}
+
+        {gradientType === "conic" && (
+          <div
+            style={{
+              display: "absolute",
+              inset: 0,
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: gradientHeight ? gradientHeight : 200,
+              marginBottom: "16px",
+            }}
+          >
+            <img
+              style={{
+                objectFit: "cover",
+                // mouse event none
+                pointerEvents: "none",
+                display: "inline-block",
+                width: gradientWidth ? gradientWidth + "px" : "100%",
+                height: gradientHeight ? gradientHeight + "px" : "100%",
+                borderRadius: rounded ? "15px" : "0",
+                filter: `blur(${blurAmount}px)`,
+              }}
+              src="/640.webp"
+              alt="Background"
+            />
+          </div>
+        )}
+
+
+         {gradientType === "custom" && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: gradientHeight ? gradientHeight : 200,
+              marginBottom: "16px",
+            }}
+          >
+            <img
+              style={{
+                objectFit: "cover",
+                width: gradientWidth ? gradientWidth + "px" : "100%",
+                height: gradientHeight ? gradientHeight + "px" : "100%",
+                borderRadius: rounded ? "15px" : "0",
+                filter: `blur(${blurAmount}px)`,
+              }}
+              src={customImage}
+              width={100}
+              height={100}
+              alt="Background"
+            />
+          </div>
+        )}
+
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {text && (
+            <div
+              className="roboto-flex text-center"
+              style={{
+                color: "#000",
+                fontSize: "1.2rem",
+              }}
+            >
+              {text}
+            </div>
+          )}
+        </div>
       </div>
     </CardContainer>
   );
