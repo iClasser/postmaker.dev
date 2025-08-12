@@ -86,7 +86,7 @@ export default function TwitterEditor() {
     innerPaddingY: 50,
     scale: 1,
     exportScale: 1,
-    pageName: "@postmaker.dev",
+    pageName: "postmaker.dev",
     logoUrl: "/logo.svg",
     logoUrlLabel: "Created with Postmaker.dev",
     borderRadius: 16,
@@ -94,7 +94,7 @@ export default function TwitterEditor() {
     isRtl: false,
     name: "John",
     username: "john_doe",
-    text: "Writing code is like telling a joke. If you have to explain it, it’s probably broken. The best code makes you smile without saying a word..",
+    text: "Elon Musk accused Apple of antitrust violations, claiming that the iPhone maker is favoring OpenAI's ChatGPT while sidelining his AI product Grok and the X app. Musk argues this contravenes fair competition, as both Grok and X struggle to rank high in the App Store despite recent upgrades.",
     showTwitterUI: true,
     verified: true,
     profileImage: "",
@@ -104,8 +104,8 @@ export default function TwitterEditor() {
   const {
     previewHeightPixels,
     previewWidthPixels,
-    width: previewWidth,
-    height: previewHeight,
+    width: Width,
+    height: Height,
     innerPaddingX,
     innerPaddingY,
     pageName,
@@ -242,14 +242,14 @@ export default function TwitterEditor() {
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
           <label className="block mb-2">
-            Preview Width: {previewWidth ? previewWidth : 0}px
+            Preview Width: {Width ? Width : 0}px
           </label>
           <input
             type="range"
             min="40"
             name="previewWidth"
             max="1920"
-            value={previewWidth}
+            value={Width}
             onChange={(e) =>
               setStateValue(e.target.name, Number(e.target.value))
             }
@@ -258,14 +258,14 @@ export default function TwitterEditor() {
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
           <label className="block mb-2">
-            Preview Height: {previewHeight ? previewHeight : 0}px
+            Preview Height: {Height ? Height : 0}px
           </label>
           <input
             type="range"
             min="40"
             name="previewHeight"
             max="1920"
-            value={previewHeight}
+            value={Height}
             onChange={(e) =>
               setStateValue(e.target.name, Number(e.target.value))
             }
@@ -397,8 +397,8 @@ export default function TwitterEditor() {
           style={{
             zIndex: 10,
             backgroundColor: "transparent",
-            width: `${previewWidth}px`,
-            height: `${previewHeight}px`,
+            width: `${Width}px`,
+            height: `${Height}px`,
             overflow: "clip",
           }}
           className="transition-all duration-200 select-none preview-container-drag"

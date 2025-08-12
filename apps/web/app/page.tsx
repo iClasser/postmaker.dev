@@ -16,12 +16,15 @@ const tabs = [
   {
     key: "chatgpt",
     label: "ChatGPT Card",
-  }
-  // ,
+  },
   // {
   //   key: "gradient",
   //   label: "Gradient Card",
   // },
+  {
+    key: "twitter",
+    label: "Twitter Card",
+  }
 ];
 
 export default function Home() {
@@ -32,7 +35,8 @@ export default function Home() {
       <CardSizeProvider>
         {tab === "markdown" ? <QuizMarkdownEditor /> : null}
         {tab === "chatgpt" ? <ChatgptEditor /> : null}
-        {/* {tab === "gradient" ? <GradientEditor /> : null} */}
+         {/* {tab === "gradient" ? <GradientEditor /> : null} */}
+        {tab === "twitter" ? <TwitterEditor /> : null}
       </CardSizeProvider>
     </MainHomeLayout>
   );
