@@ -5,6 +5,7 @@ import "./page.module.css";
 import QuizMarkdownEditor from "../components/markdown-editor";
 import ChatgptEditor from "../components/chatgpt-editor";
 import TwitterEditor from "../components/twitter-editor";
+
 import GradientEditor from "../components/gradient-editor";
 import { CardSizeProvider } from "@repo/ui/context/CardSizeContext";
 
@@ -24,7 +25,8 @@ const tabs = [
   {
     key: "twitter",
     label: "Twitter Card",
-  }
+  },
+
 ];
 
 export default function Home() {
@@ -37,6 +39,7 @@ export default function Home() {
         {tab === "chatgpt" ? <ChatgptEditor /> : null}
          {/* {tab === "gradient" ? <GradientEditor /> : null} */}
         {tab === "twitter" ? <TwitterEditor /> : null}
+     
       </CardSizeProvider>
     </MainHomeLayout>
   );
