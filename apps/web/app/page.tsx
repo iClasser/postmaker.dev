@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import "./page.module.css";
 import QuizMarkdownEditor from "../components/markdown-editor";
 import ChatgptEditor from "../components/chatgpt-editor";
+import TwitterEditor from "../components/twitter-editor";
+import NotebookEditor from "../components/notebook-editor";
 import GradientEditor from "../components/gradient-editor";
 import { CardSizeProvider } from "@repo/ui/context/CardSizeContext";
 
@@ -16,9 +18,17 @@ const tabs = [
     key: "chatgpt",
     label: "ChatGPT Card",
   },
+  // {
+  //   key: "gradient",
+  //   label: "Gradient Card",
+  // },
   {
-    key: "gradient",
-    label: "Gradient Card",
+    key: "twitter",
+    label: "Twitter Card",
+  },
+  {
+    key: "notebook",
+    label: "Notebook Card",
   }
 ];
 
@@ -30,7 +40,10 @@ export default function Home() {
       <CardSizeProvider>
         {tab === "markdown" ? <QuizMarkdownEditor /> : null}
         {tab === "chatgpt" ? <ChatgptEditor /> : null}
-        {tab === "gradient" ? <GradientEditor /> : null}
+         {/* {tab === "gradient" ? <GradientEditor /> : null} */}
+        {tab === "twitter" ? <TwitterEditor /> : null}
+        {tab === "notebook" ? <NotebookEditor /> : null}
+     
       </CardSizeProvider>
     </MainHomeLayout>
   );

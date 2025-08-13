@@ -1,14 +1,19 @@
 "use client";
-import { GradientPreview } from "@repo/ui/gradient-preview/gradient-preview";
-import { useContext, useEffect, useState } from "react";
-import { DownloadButton } from "@repo/web-ui/download-button";
-import { CardSizeContext } from "@repo/ui/context/CardSizeContext";
-import SocialMediaController from "@repo/web-ui/SocialMediaController";
-const STORAGE_KEY = "gradient-editor-v1";
 
-const cardBgColor = "bg-yellow-200";
-const textColor = "text-gray-900";
-const borderColor = "border-gray-300";
+import { TwitterPreview } from "@repo/ui/twitter-preview/twitter-preview";
+import { useContext, useEffect, useState, useRef } from "react";
+import { DownloadButton } from "@repo/web-ui/download-button";
+import {
+  CardSizeContext,
+  CardSizeProvider,
+} from "@repo/ui/context/CardSizeContext";
+import SocialMediaController from "@repo/web-ui/SocialMediaController";
+
+const STORAGE_KEY = "twitterCardv4";
+
+const cardBgColor = "bg-gradient-to-br from-sky-200 via-ice-100 to-white";
+const textColor = "text-black";
+const borderColor = "border-gray-200";
 
 const componentSocialMapping = {
   instagramPost: {
@@ -67,46 +72,38 @@ const componentSocialMapping = {
   },
 };
 
-
-const gradientTypes = [
-  { label: "Default", value: "default" },
-  { label: "Nano", value: "nano" },
-  { label: "Mini", value: "mini" },
-  { label: "Pink", value: "pink" },
-  { label: "Conic", value: "conic" },
-  { label: "Custom Image", value: "custom" },
-];
-
-export default function GradientEditor() {
+export default function TwitterEditor() {
   const [loaded, setLoaded] = useState(false);
+  const profileImageInputRef = useRef<HTMLInputElement>(null);
+  const tweetImageInputRef = useRef<HTMLInputElement>(null);
 
   const [state, setState] = useState({
+    previewHeightPixels: 540,
+    previewWidthPixels: 540,
     width: 540,
     height: 540,
     innerPaddingX: 30,
     innerPaddingY: 50,
     scale: 1,
     exportScale: 1,
-    pageName: "@postmaker.dev",
+    pageName: "postmaker.dev",
     logoUrl: "/logo.svg",
     logoUrlLabel: "Created with Postmaker.dev",
-    borderRadius: 0,
+    borderRadius: 16,
     hasCardBorder: false,
     isRtl: false,
-    customImage: "/logo.svg",
-
-    title: "Postmaker.dev",
-    text: `Create Posts`,
-    rounded: true,
-    gradientType: "default",
-    gradientWidth: 0,
-    gradientHeight: 0,
-    blurAmount: 0,
+    name: "John",
+    username: "john_doe",
+    text: "Boost your workflow with PostMaker.dev! Create, schedule, and share posts seamlessly across all your platforms. Say goodbye to cluttered posting and hello to smarter content management. Start creating now!",
+    showTwitterUI: true,
+    verified: true,
+    profileImage: "",
+    tweetImage: "",
   });
 
   const {
-    width,
-    height,
+    width: width,
+    height: height,
     innerPaddingX,
     innerPaddingY,
     pageName,
@@ -115,16 +112,15 @@ export default function GradientEditor() {
     borderRadius,
     hasCardBorder,
     isRtl,
-    title,
-    rounded,
+    name,
+    username,
+    showTwitterUI,
+    verified,
     text,
+    profileImage,
+    tweetImage,
     scale,
     exportScale,
-    gradientWidth,
-    gradientHeight,
-    gradientType,
-    blurAmount,
-    customImage,
   } = state;
 
   // Load from localStorage on mount
@@ -148,10 +144,23 @@ export default function GradientEditor() {
     setState((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'profile' | 'tweet') => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setStateValue(type === 'profile' ? 'profileImage' : 'tweetImage', event.target.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="p-4 flex md:flex-row flex-col gap-2 w-full">
       <div className="min-h-screen preview-left-panel">
-        <h2 className="preview-heading">Gradient Card</h2>
+        <h2 className="preview-heading">Twitter Card</h2>
         <p>Page Name:</p>
         <input
           className="w-full px-2 border rounded-md"
@@ -176,84 +185,67 @@ export default function GradientEditor() {
           onChange={(e) => setStateValue(e.target.name, e.target.value)}
           placeholder="Enter logo URL label..."
         />
-
-
-        {/* gradient types select */}
-        <p>Gradient Type:</p>
-        <select
-          className="w-full px-2 border rounded-md"
-          value={gradientType}
-          name="gradientType"
-          onChange={(e) => {
-            if (e.target.value === "conic") {
-              setStateValue("blurAmount", 40);
-            } else {
-              setStateValue("blurAmount", 0);
-            }
-              setStateValue(e.target.name, e.target.value);
-
-          }}
-        >
-          {gradientTypes.map((type) => (
-            <option key={type.value} value={type.value}>
-              {type.label}
-            </option>
-          ))}
-        </select>
- {gradientType === "custom" && (
-          <>
-            <p>Custom Image URL:</p>
-            <input
-              className="w-full px-2 border rounded-md"
-              value={customImage}
-              name="customImage"
-              onChange={(e) => setStateValue(e.target.name, e.target.value)}
-              placeholder="Enter custom image URL..."
-            />
-          </>
-        )}
-        {/* Blur Amount */}
-        <p>Blur Amount: {blurAmount}px</p>
-        <input
-          type="range"
-          min="0"
-          name="blurAmount"
-          max="100"
-          value={blurAmount || 0}
-          onChange={(e) =>
-            setStateValue(e.target.name, Number(e.target.value))
-          }
-          className="w-full"
-        />
-
-       
-        <p>Title:</p>
+        <p>Name:</p>
         <input
           className="w-full px-2 border rounded-md"
-          value={title}
-          name="title"
+          value={name}
+          name="name"
           onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter title..."
+          placeholder="Enter name..."
         />
-
-        <p>Subtitle:</p>
+        <p>Username:</p>
         <input
           className="w-full px-2 border rounded-md"
+          value={username}
+          name="username"
+          onChange={(e) => setStateValue(e.target.name, e.target.value)}
+          placeholder="Enter username..."
+        />
+        <p>Your tweet:</p>
+        <textarea
+          className="w-full h-64 px-2 border rounded-md"
           value={text}
           name="text"
           onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter subtitle..."
+          placeholder="Write your tweet here..."
         />
 
+        {/* Profile Image Upload */}
+        <div className="mt-4">
+          <p>Profile Image:</p>
+          <input
+            type="file"
+            ref={profileImageInputRef}
+            onChange={(e) => handleImageUpload(e, 'profile')}
+            accept="image/*"
+            className="hidden"
+          />
+          <button
+            onClick={() => profileImageInputRef.current?.click()}
+            className="px-2 py-2 bg-blue-500 rounded-md hover:bg-blue-700"
+          >
+            Upload Profile Image
+          </button>
+          {profileImage && (
+            <button
+              onClick={() => setStateValue('profileImage', '')}
+              className="ml-2 px-4 py-2 bg-red-400 rounded-md hover:bg-red-500"
+            >
+              Remove
+            </button>
+          )}
+        </div>
+
+     
+
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
           <label className="block mb-2">
             Preview Width: {width ? width : 0}px
           </label>
           <input
             type="range"
             min="40"
-            name="width"
+            name="previewWidth"
             max="1920"
             value={width}
             onChange={(e) =>
@@ -263,14 +255,13 @@ export default function GradientEditor() {
           />
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
           <label className="block mb-2">
             Preview Height: {height ? height : 0}px
           </label>
           <input
             type="range"
             min="40"
-            name="height"
+            name="previewHeight"
             max="1920"
             value={height}
             onChange={(e) =>
@@ -280,7 +271,6 @@ export default function GradientEditor() {
           />
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Scale */}
           <label className="block mb-2">
             Content Scale: {scale ? scale : 0}x
           </label>
@@ -297,7 +287,6 @@ export default function GradientEditor() {
           />
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
           <label className="block mb-2">Border Radius: {borderRadius}px</label>
           <input
             type="range"
@@ -313,7 +302,6 @@ export default function GradientEditor() {
         </div>
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Checkbox for card border */}
           <label className="flex items-center">
             <input
               type="checkbox"
@@ -326,56 +314,30 @@ export default function GradientEditor() {
           </label>
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Checkbox */}
           <label className="flex items-center">
             <input
               type="checkbox"
-              checked={rounded}
-              name="rounded"
+              checked={showTwitterUI}
+              name="showTwitterUI"
               onChange={(e) => setStateValue(e.target.name, e.target.checked)}
               className="mr-2"
             />
-            Rounded Gradient
+            Show Twitter UI
           </label>
         </div>
-
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">
-            Gradient Width: {gradientWidth ? gradientWidth : 0}px
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={verified}
+              name="verified"
+              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
+              className="mr-2"
+            />
+            Verified Account
           </label>
-          <input
-            type="range"
-            min="0"
-            name="gradientWidth"
-            max="1920"
-            value={gradientWidth || 0}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">
-            Gradient Height: {gradientHeight ? gradientHeight : 0}px
-          </label>
-          <input
-            type="range"
-            min="0"
-            name="gradientHeight"
-            max="1920"
-            value={gradientHeight || 0}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Checkbox */}
           <label className="flex items-center">
             <input
               type="checkbox"
@@ -389,7 +351,6 @@ export default function GradientEditor() {
         </div>
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
           <label className="block mb-2">
             Inner Padding X: {innerPaddingX}px
           </label>
@@ -406,7 +367,6 @@ export default function GradientEditor() {
           />
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
           <label className="block mb-2">
             Inner Padding Y: {innerPaddingY}px
           </label>
@@ -441,26 +401,22 @@ export default function GradientEditor() {
           }}
           className="transition-all duration-200 select-none preview-container-drag"
         >
-          <GradientPreview
+          <TwitterPreview
             logoUrl={logoUrl}
             logoUrlLabel={logoUrlLabel}
             pageName={pageName}
-            title={title}
+            name={name}
+            username={username}
             text={text}
-            gradientWidth={gradientWidth}
-            gradientHeight={gradientHeight}
-            rounded={rounded}
-            blurAmount={blurAmount}
+            showTwitterUI={showTwitterUI}
+            verified={verified}
+            profileImage={profileImage}
+            tweetImage={tweetImage}
             scale={scale}
-            gradientType={gradientType}
-            customImage={customImage}
             styles={{
               zIndex: 10,
-              // scale: exportScale,
               height: "100%",
               direction: isRtl ? "rtl" : "ltr",
-              backgroundColor: "white",
-              color: "black",
               ...(innerPaddingX
                 ? {
                     paddingLeft: `${innerPaddingX}px`,
@@ -477,12 +433,11 @@ export default function GradientEditor() {
             }}
             className={`w-full ${
               hasCardBorder ? "border" : ""
-            } p-6 shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} ${borderColor}
-          w-full`}
+            } shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} ${borderColor}`}
           />
         </div>
       </div>
-      <DownloadButton className="show-mobile bg-black shadow-2xl text-white p-4 rounded-md hover:bg-sky-700" />
+      <DownloadButton className="show-mobile bg-sky-600 shadow-2xl text-white p-4 rounded-md hover:bg-sky-700" />
     </div>
   );
 }

@@ -1,0 +1,132 @@
+.twitter-preview-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(135deg, #87CEEB 0%, #E0F7FA 50%, #FFFFFF 100%);
+  color: #000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.twitter-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.twitter-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #B388FF 0%, #FF80AB 100%);
+  margin-right: 12px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.twitter-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.twitter-name-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.twitter-name {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  color: #000;
+}
+
+.twitter-username {
+  color: #555;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.twitter-text {
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 16px;
+  white-space: pre-wrap;
+  color: #000;
+}
+
+.twitter-text p {
+  margin: 0 0 16px 0;
+}
+
+.twitter-text p:last-child {
+  margin-bottom: 0;
+}
+
+.tweet-image-container {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tweet-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+.twitter-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.twitter-stats {
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 4px;
+}
+
+.twitter-stat {
+  margin-right: 4px;
+}
+
+.twitter-actions {
+  display: flex;
+  justify-content: space-between;
+  max-width: 425px;
+}
+
+.twitter-action {
+  display: flex;
+  align-items: center;
+  color: #555;
+  font-size: 13px;
+  gap: 4px;
+}
+
+.twitter-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.twitter-verified {
+  width: 18px;
+  height: 18px;
+  fill: #1DA1F2;
+}

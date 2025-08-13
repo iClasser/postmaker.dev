@@ -1,14 +1,19 @@
 "use client";
-import { GradientPreview } from "@repo/ui/gradient-preview/gradient-preview";
+
+import { NotebookPreview } from "@repo/ui/notebookcard-preview/notebook-preview";
 import { useContext, useEffect, useState } from "react";
 import { DownloadButton } from "@repo/web-ui/download-button";
-import { CardSizeContext } from "@repo/ui/context/CardSizeContext";
+import {
+  CardSizeContext,
+  CardSizeProvider,
+} from "@repo/ui/context/CardSizeContext";
 import SocialMediaController from "@repo/web-ui/SocialMediaController";
-const STORAGE_KEY = "gradient-editor-v1";
 
-const cardBgColor = "bg-yellow-200";
-const textColor = "text-gray-900";
-const borderColor = "border-gray-300";
+const STORAGE_KEY = "notebookCardv1";
+
+const cardBgColor = "bg-violet-500";
+const textColor = "text-white";
+
 
 const componentSocialMapping = {
   instagramPost: {
@@ -67,46 +72,38 @@ const componentSocialMapping = {
   },
 };
 
-
-const gradientTypes = [
-  { label: "Default", value: "default" },
-  { label: "Nano", value: "nano" },
-  { label: "Mini", value: "mini" },
-  { label: "Pink", value: "pink" },
-  { label: "Conic", value: "conic" },
-  { label: "Custom Image", value: "custom" },
-];
-
-export default function GradientEditor() {
+export default function NotebookEditor() {
   const [loaded, setLoaded] = useState(false);
 
   const [state, setState] = useState({
+    previewHeightPixels: 540,
+    previewWidthPixels: 540,
     width: 540,
     height: 540,
     innerPaddingX: 30,
     innerPaddingY: 50,
     scale: 1,
     exportScale: 1,
-    pageName: "@postmaker.dev",
+    pageName: "postmaker.dev",
     logoUrl: "/logo.svg",
     logoUrlLabel: "Created with Postmaker.dev",
-    borderRadius: 0,
+    borderRadius: 8,
     hasCardBorder: false,
     isRtl: false,
-    customImage: "/logo.svg",
-
-    title: "Postmaker.dev",
-    text: `Create Posts`,
-    rounded: true,
-    gradientType: "default",
-    gradientWidth: 0,
-    gradientHeight: 0,
-    blurAmount: 0,
+    title: "Prepare for interviews with ChatGPT",
+    items: [
+      "Generate practice questions",
+      "Talk through your responses",
+      "Practice interview scenarios",
+      "Get ideas to build rapport",
+      "Do a mock interview"
+    ],
+    showCheckboxes: true,
   });
 
   const {
-    width,
-    height,
+    width: width,
+    height: height,
     innerPaddingX,
     innerPaddingY,
     pageName,
@@ -116,15 +113,10 @@ export default function GradientEditor() {
     hasCardBorder,
     isRtl,
     title,
-    rounded,
-    text,
+    items,
+    showCheckboxes,
     scale,
     exportScale,
-    gradientWidth,
-    gradientHeight,
-    gradientType,
-    blurAmount,
-    customImage,
   } = state;
 
   // Load from localStorage on mount
@@ -148,10 +140,26 @@ export default function GradientEditor() {
     setState((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleItemChange = (index: number, value: string) => {
+    const newItems = [...items];
+    newItems[index] = value;
+    setStateValue("items", newItems);
+  };
+
+  const addItem = () => {
+    setStateValue("items", [...items, "New item"]);
+  };
+
+  const removeItem = (index: number) => {
+    const newItems = [...items];
+    newItems.splice(index, 1);
+    setStateValue("items", newItems);
+  };
+
   return (
     <div className="p-4 flex md:flex-row flex-col gap-2 w-full">
       <div className="min-h-screen preview-left-panel">
-        <h2 className="preview-heading">Gradient Card</h2>
+        <h2 className="preview-heading">Notebook Card</h2>
         <p>Page Name:</p>
         <input
           className="w-full px-2 border rounded-md"
@@ -176,57 +184,6 @@ export default function GradientEditor() {
           onChange={(e) => setStateValue(e.target.name, e.target.value)}
           placeholder="Enter logo URL label..."
         />
-
-
-        {/* gradient types select */}
-        <p>Gradient Type:</p>
-        <select
-          className="w-full px-2 border rounded-md"
-          value={gradientType}
-          name="gradientType"
-          onChange={(e) => {
-            if (e.target.value === "conic") {
-              setStateValue("blurAmount", 40);
-            } else {
-              setStateValue("blurAmount", 0);
-            }
-              setStateValue(e.target.name, e.target.value);
-
-          }}
-        >
-          {gradientTypes.map((type) => (
-            <option key={type.value} value={type.value}>
-              {type.label}
-            </option>
-          ))}
-        </select>
- {gradientType === "custom" && (
-          <>
-            <p>Custom Image URL:</p>
-            <input
-              className="w-full px-2 border rounded-md"
-              value={customImage}
-              name="customImage"
-              onChange={(e) => setStateValue(e.target.name, e.target.value)}
-              placeholder="Enter custom image URL..."
-            />
-          </>
-        )}
-        {/* Blur Amount */}
-        <p>Blur Amount: {blurAmount}px</p>
-        <input
-          type="range"
-          min="0"
-          name="blurAmount"
-          max="100"
-          value={blurAmount || 0}
-          onChange={(e) =>
-            setStateValue(e.target.name, Number(e.target.value))
-          }
-          className="w-full"
-        />
-
-       
         <p>Title:</p>
         <input
           className="w-full px-2 border rounded-md"
@@ -235,25 +192,52 @@ export default function GradientEditor() {
           onChange={(e) => setStateValue(e.target.name, e.target.value)}
           placeholder="Enter title..."
         />
-
-        <p>Subtitle:</p>
-        <input
-          className="w-full px-2 border rounded-md"
-          value={text}
-          name="text"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter subtitle..."
-        />
+        
+        <p>Checklist Items:</p>
+        {items.map((item, index) => (
+          <div key={index} className="flex mb-2">
+            <input
+              className="flex-1 px-1 border rounded-md mr-2"
+              value={item}
+              onChange={(e) => handleItemChange(index, e.target.value)}
+              placeholder="Enter item text..."
+            />
+            <button
+              onClick={() => removeItem(index)}
+              className="px-1 bg-red-400 rounded-md hover:bg-red-500"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+        <button
+          onClick={addItem}
+          className="mt-2 px-4 py-1 bg-blue-500 rounded-md hover:bg-blue-700"
+        >
+          Add Item
+        </button>
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              checked={showCheckboxes}
+              name="showCheckboxes"
+              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
+              className="mr-2"
+            />
+            Show Checkboxes
+          </label>
+        </div>
+
+        <div className="flex flex-col mt-4 border p-2 rounded-md">
           <label className="block mb-2">
             Preview Width: {width ? width : 0}px
           </label>
           <input
             type="range"
             min="40"
-            name="width"
+            name="previewWidth"
             max="1920"
             value={width}
             onChange={(e) =>
@@ -263,14 +247,13 @@ export default function GradientEditor() {
           />
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
           <label className="block mb-2">
             Preview Height: {height ? height : 0}px
           </label>
           <input
             type="range"
             min="40"
-            name="height"
+            name="previewHeight"
             max="1920"
             value={height}
             onChange={(e) =>
@@ -280,7 +263,6 @@ export default function GradientEditor() {
           />
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Scale */}
           <label className="block mb-2">
             Content Scale: {scale ? scale : 0}x
           </label>
@@ -297,7 +279,6 @@ export default function GradientEditor() {
           />
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
           <label className="block mb-2">Border Radius: {borderRadius}px</label>
           <input
             type="range"
@@ -313,7 +294,6 @@ export default function GradientEditor() {
         </div>
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Checkbox for card border */}
           <label className="flex items-center">
             <input
               type="checkbox"
@@ -326,56 +306,6 @@ export default function GradientEditor() {
           </label>
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Checkbox */}
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={rounded}
-              name="rounded"
-              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
-              className="mr-2"
-            />
-            Rounded Gradient
-          </label>
-        </div>
-
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">
-            Gradient Width: {gradientWidth ? gradientWidth : 0}px
-          </label>
-          <input
-            type="range"
-            min="0"
-            name="gradientWidth"
-            max="1920"
-            value={gradientWidth || 0}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">
-            Gradient Height: {gradientHeight ? gradientHeight : 0}px
-          </label>
-          <input
-            type="range"
-            min="0"
-            name="gradientHeight"
-            max="1920"
-            value={gradientHeight || 0}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Checkbox */}
           <label className="flex items-center">
             <input
               type="checkbox"
@@ -389,7 +319,6 @@ export default function GradientEditor() {
         </div>
 
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
           <label className="block mb-2">
             Inner Padding X: {innerPaddingX}px
           </label>
@@ -406,7 +335,6 @@ export default function GradientEditor() {
           />
         </div>
         <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
           <label className="block mb-2">
             Inner Padding Y: {innerPaddingY}px
           </label>
@@ -441,26 +369,18 @@ export default function GradientEditor() {
           }}
           className="transition-all duration-200 select-none preview-container-drag"
         >
-          <GradientPreview
+          <NotebookPreview
             logoUrl={logoUrl}
             logoUrlLabel={logoUrlLabel}
             pageName={pageName}
             title={title}
-            text={text}
-            gradientWidth={gradientWidth}
-            gradientHeight={gradientHeight}
-            rounded={rounded}
-            blurAmount={blurAmount}
+            items={items}
+            showCheckboxes={showCheckboxes}
             scale={scale}
-            gradientType={gradientType}
-            customImage={customImage}
             styles={{
               zIndex: 10,
-              // scale: exportScale,
               height: "100%",
               direction: isRtl ? "rtl" : "ltr",
-              backgroundColor: "white",
-              color: "black",
               ...(innerPaddingX
                 ? {
                     paddingLeft: `${innerPaddingX}px`,
@@ -477,12 +397,11 @@ export default function GradientEditor() {
             }}
             className={`w-full ${
               hasCardBorder ? "border" : ""
-            } p-6 shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} ${borderColor}
-          w-full`}
+            } shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} `}
           />
         </div>
       </div>
-      <DownloadButton className="show-mobile bg-black shadow-2xl text-white p-4 rounded-md hover:bg-sky-700" />
+      <DownloadButton className="show-mobile bg-gray-700 shadow-2xl text-white p-4 rounded-md hover:bg-gray-800" />
     </div>
   );
 }
