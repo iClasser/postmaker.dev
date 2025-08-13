@@ -213,7 +213,7 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
                 width: gradientWidth ? gradientWidth + "px" : "100%",
                 height: gradientHeight ? gradientHeight + "px" : "100%",
                 borderRadius: rounded ? "15px" : "0",
-                filter: `blur(${blurAmount}px)`,
+                // filter: `blur(${blurAmount}px)`,
               }}
               src={customImage}
               width={100}

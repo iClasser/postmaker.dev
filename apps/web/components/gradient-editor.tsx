@@ -105,8 +105,8 @@ export default function GradientEditor() {
   });
 
   const {
-    width: width,
-    height: height,
+    width,
+    height,
     innerPaddingX,
     innerPaddingY,
     pageName,
