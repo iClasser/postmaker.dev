@@ -4,6 +4,13 @@ import { useContext, useEffect, useState } from "react";
 import { DownloadButton } from "@repo/web-ui/download-button";
 import { CardSizeContext } from "@repo/ui/context/CardSizeContext";
 import SocialMediaController from "@repo/web-ui/SocialMediaController";
+import { Slider } from "./ui/slider";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import { cn } from "../lib/cn";
+import { Cog, Delete, Move, Package2, Trash2 } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
+
 const STORAGE_KEY = "gradient-editor-v1";
 
 const cardBgColor = "bg-white";
@@ -66,7 +73,6 @@ const componentSocialMapping = {
     scale: 0.5,
   },
 };
-
 
 const gradientTypes = [
   { label: "Default", value: "default" },
@@ -144,284 +150,265 @@ export default function GradientEditor() {
     setLoaded(true);
   }, []);
 
+  const deleteStorage = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    alert("Storage cleared! Reloading the page.");
+    window.location.reload();
+  };
+
   const setStateValue = (key: string, value: any) => {
     setState((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
     <div className="p-4 flex md:flex-row flex-col gap-2 w-full">
-      <div className="min-h-screen preview-left-panel">
-        <h2 className="preview-heading">Gradient Card</h2>
-        <p>Page Name:</p>
-        <input
-          className="w-full px-2 border rounded-md"
-          value={pageName}
-          name="pageName"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter page name..."
-        />
-        <p>Logo URL:</p>
-        <input
-          className="w-full px-2 border rounded-md"
-          value={logoUrl}
-          name="logoUrl"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter logo URL..."
-        />
-        <p>Logo URL Label:</p>
-        <input
-          className="w-full px-2 border rounded-md"
-          value={logoUrlLabel}
-          name="logoUrlLabel"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter logo URL label..."
-        />
-
-
-        {/* gradient types select */}
-        <p>Gradient Type:</p>
-        <select
-          className="w-full px-2 border rounded-md"
-          value={gradientType}
-          name="gradientType"
-          onChange={(e) => {
-            if (e.target.value === "conic") {
-              setStateValue("blurAmount", 40);
-            } else {
-              setStateValue("blurAmount", 0);
-            }
-              setStateValue(e.target.name, e.target.value);
-
-          }}
+      <div className="min-h-screen preview-left-panel relative">
+        <button
+          onClick={deleteStorage}
+          className="absolute top-2 right-1 text-white  rounded-md hover:text-black cursor-pointer"
         >
-          {gradientTypes.map((type) => (
-            <option key={type.value} value={type.value}>
-              {type.label}
-            </option>
-          ))}
-        </select>
- {gradientType === "custom" && (
-          <>
-            <p>Custom Image URL:</p>
-            <input
-              className="w-full px-2 border rounded-md"
-              value={customImage}
-              name="customImage"
-              onChange={(e) => setStateValue(e.target.name, e.target.value)}
-              placeholder="Enter custom image URL..."
+          <Trash2 size={16} className="inline-block mr-1" />
+        </button>
+        <h2 className="preview-heading">Gradient Card</h2>
+
+        {/* Tabs */}
+        <Tabs defaultValue="card" className="w-full">
+          <TabsList className="mb-4 border-b">
+            <TabsTrigger value="card" className="mr-2">
+              <Package2 size={16} className="inline-block mr-1" />
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="mr-2">
+              <Cog size={16} className="inline-block mr-1" />
+            </TabsTrigger>
+            <TabsTrigger value="page" className="mr-2">
+              <Move size={16} className="inline-block mr-1" />
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="card">
+            {/* gradient types select */}
+            <p>Gradient Type:</p>
+            <select
+              className="w-full px-2 border rounded-md mb-4"
+              value={gradientType}
+              name="gradientType"
+              onChange={(e) => {
+                if (e.target.value === "conic") {
+                  setStateValue("blurAmount", 40);
+                } else {
+                  setStateValue("blurAmount", 0);
+                }
+                setStateValue(e.target.name, e.target.value);
+              }}
+            >
+              {gradientTypes.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+            {gradientType === "custom" && (
+              <>
+                <DrawInput
+                  keyName="customImage"
+                  value={customImage}
+                  placeholder="Enter custom image URL..."
+                  label="Custom Image URL"
+                  onChange={setStateValue}
+                  isTextArea={false}
+                  className="mt-4"
+                />
+              </>
+            )}
+            {/* Blur Amount */}
+
+            <SliderBox
+              keyName="blurAmount"
+              label="Blur Amount"
+              value={blurAmount || 0}
+              unit="px"
+              min={0}
+              max={100}
+              setStateValue={(name, value) =>
+                setStateValue(name, Number(value))
+              }
             />
-          </>
-        )}
-        {/* Blur Amount */}
-        <p>Blur Amount: {blurAmount}px</p>
-        <input
-          type="range"
-          min="0"
-          name="blurAmount"
-          max="100"
-          value={blurAmount || 0}
-          onChange={(e) =>
-            setStateValue(e.target.name, Number(e.target.value))
-          }
-          className="w-full"
-        />
-
-       
-        <p>Title:</p>
-        <input
-          className="w-full px-2 border rounded-md"
-          value={title}
-          name="title"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter title..."
-        />
-
-        <p>Subtitle:</p>
-        <input
-          className="w-full px-2 border rounded-md"
-          value={text}
-          name="text"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter subtitle..."
-        />
-
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">
-            Preview Width: {width ? width : 0}px
-          </label>
-          <input
-            type="range"
-            min="40"
-            name="width"
-            max="1920"
-            value={width}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">
-            Preview Height: {height ? height : 0}px
-          </label>
-          <input
-            type="range"
-            min="40"
-            name="height"
-            max="1920"
-            value={height}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Scale */}
-          <label className="block mb-2">
-            Content Scale: {scale ? scale : 0}x
-          </label>
-          <input
-            type="range"
-            min="0"
-            name="scale"
-            max="300"
-            value={scale * 100}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value) / 100)
-            }
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">Border Radius: {borderRadius}px</label>
-          <input
-            type="range"
-            min="0"
-            max="50"
-            name="borderRadius"
-            value={borderRadius}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Checkbox for card border */}
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={hasCardBorder}
-              name="hasCardBorder"
-              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
-              className="mr-2"
+            <DrawInput
+              keyName="title"
+              value={title}
+              placeholder="Enter title..."
+              label="Title"
+              onChange={setStateValue}
+              isTextArea={false}
+              className="mt-4"
             />
-            Has Card Border
-          </label>
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Checkbox */}
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={rounded}
-              name="rounded"
-              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
-              className="mr-2"
+
+            <DrawInput
+              keyName="text"
+              value={text}
+              placeholder="Enter subtitle..."
+              label="Subtitle"
+              onChange={setStateValue}
+              isTextArea={false}
+              className=""
             />
-            Rounded Gradient
-          </label>
-        </div>
 
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">
-            Gradient Width: {gradientWidth ? gradientWidth : 0}px
-          </label>
-          <input
-            type="range"
-            min="0"
-            name="gradientWidth"
-            max="1920"
-            value={gradientWidth || 0}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">
-            Gradient Height: {gradientHeight ? gradientHeight : 0}px
-          </label>
-          <input
-            type="range"
-            min="0"
-            name="gradientHeight"
-            max="1920"
-            value={gradientHeight || 0}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              {/* Checkbox */}
+              <CheckBox
+                keyName="rounded"
+                value={rounded}
+                label="Rounded Gradient"
+                setStateValue={setStateValue}
+              />
+            </div>
 
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Checkbox */}
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={isRtl}
-              name="isRtl"
-              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
-              className="mr-2"
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              {/* Slider */}
+              <SliderBox
+                keyName="gradientWidth"
+                label="Gradient Width"
+                value={gradientWidth}
+                unit="px"
+                min={0}
+                max={1920}
+                setStateValue={setStateValue}
+              />
+            </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              <SliderBox
+                keyName="gradientHeight"
+                label="Gradient Height"
+                value={gradientHeight}
+                unit="px"
+                min={0}
+                max={1920}
+                setStateValue={setStateValue}
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value="settings">
+            <DrawInput
+              keyName="pageName"
+              value={pageName}
+              placeholder="Enter page name..."
+              label="Page Name"
+              onChange={setStateValue}
+              isTextArea={false}
+              className="mt-4"
             />
-            Is RTL
-          </label>
-        </div>
+            <DrawInput
+              keyName="logoUrl"
+              value={logoUrl}
+              placeholder="Enter logo URL..."
+              label="Logo URL"
+              onChange={setStateValue}
+              isTextArea={false}
+              className="mt-4"
+            />
+            <DrawInput
+              keyName="logoUrlLabel"
+              value={logoUrlLabel}
+              placeholder="Enter logo URL label..."
+              label="Logo URL Label"
+              onChange={setStateValue}
+              isTextArea={false}
+              className="mt-4"
+            />
 
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">
-            Inner Padding X: {innerPaddingX}px
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="150"
-            name="innerPaddingX"
-            value={innerPaddingX}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          {/* Slider */}
-          <label className="block mb-2">
-            Inner Padding Y: {innerPaddingY}px
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="1920"
-            value={innerPaddingY}
-            name="innerPaddingY"
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              {/* Checkbox for card border */}
+              <CheckBox
+                keyName="hasCardBorder"
+                value={hasCardBorder}
+                label="Has Card Border"
+                setStateValue={setStateValue}
+              />
+            </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              {/* Slider */}
+              <SliderBox
+                keyName="borderRadius"
+                label="Border Radius"
+                value={borderRadius}
+                unit="px"
+                min={0}
+                max={50}
+                setStateValue={setStateValue}
+              />
+            </div>
+
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              {/* Checkbox */}
+              <CheckBox
+                keyName="isRtl"
+                value={isRtl}
+                label="Is RTL"
+                setStateValue={setStateValue}
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value="page">
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              <SliderBox
+                keyName="width"
+                label="Preview Width"
+                value={width}
+                unit="px"
+                min={40}
+                max={1920}
+                setStateValue={setStateValue}
+              />
+            </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              <SliderBox
+                keyName="height"
+                label="Preview Height"
+                value={height}
+                unit="px"
+                min={40}
+                max={1920}
+                setStateValue={setStateValue}
+              />
+            </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              <SliderBox
+                keyName="scale"
+                label="Content Scale"
+                value={scale * 100}
+                unit="x"
+                min={0}
+                max={300}
+                setStateValue={(name, value) =>
+                  setStateValue(name, value / 100)
+                }
+              />
+            </div>
+
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              <SliderBox
+                keyName="innerPaddingX"
+                label="Inner Padding X"
+                value={innerPaddingX}
+                unit="px"
+                min={0}
+                max={150}
+                setStateValue={setStateValue}
+              />
+            </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              {/* Slider */}
+              <SliderBox
+                keyName="innerPaddingY"
+                label="Inner Padding Y"
+                value={innerPaddingY}
+                unit="px"
+                min={0}
+                max={1920}
+                setStateValue={setStateValue}
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
       {/* Resizable Preview Panel */}
       <div className="preview-right-panel">
@@ -483,6 +470,108 @@ export default function GradientEditor() {
         </div>
       </div>
       <DownloadButton className="show-mobile bg-black shadow-2xl text-white p-4 rounded-md hover:bg-sky-700" />
+    </div>
+  );
+}
+
+function CheckBox({
+  keyName,
+  value,
+  label,
+  setStateValue,
+}: {
+  keyName: string;
+  value: boolean;
+  label: string;
+  setStateValue: (name: string, value: any) => void;
+}) {
+  return (
+    <label className="flex items-center">
+      <input
+        type="checkbox"
+        checked={value}
+        name={keyName}
+        onChange={(e) => setStateValue(keyName, e.target.checked)}
+        className="mr-2"
+      />
+      {label || <span>{keyName}</span>}
+    </label>
+  );
+}
+
+function SliderBox({
+  keyName,
+  value,
+  label,
+  min,
+  max,
+  unit,
+  setStateValue,
+}: {
+  keyName: string;
+  value: number;
+  label: string;
+  min: number;
+  max: number;
+  unit?: string;
+  setStateValue: (name: string, value: any) => void;
+}) {
+  return (
+    <>
+      <label className="block mb-2">
+        {label || <span>{keyName}</span>}: {value}
+        {unit && <span className="">{unit}</span>}
+      </label>
+      <Slider
+        min={min}
+        max={max}
+        name={keyName}
+        value={[value]}
+        onValueChange={(val) => setStateValue(keyName, val)}
+        className="w-full"
+      />
+    </>
+  );
+}
+
+function DrawInput({
+  keyName,
+  value,
+  placeholder,
+  label,
+  onChange: setStateValue,
+  isTextArea = false,
+  type = "text",
+  className = "",
+}: {
+  keyName: string;
+  value: string;
+  placeholder?: string;
+  label?: React.ReactNode;
+  onChange: (name: string, value: any) => void;
+  isTextArea?: boolean;
+  type?: string;
+  className?: string;
+}) {
+  return (
+    <div className={cn("mb-4", className)}>
+      <label className="block">{label || <span>{keyName}</span>}:</label>
+      {isTextArea ? (
+        <Textarea
+          value={value}
+          onChange={(e) => setStateValue(keyName, e.target.value)}
+          className="w-full px-2 border rounded-md"
+          placeholder={placeholder}
+        />
+      ) : (
+        <Input
+          type={type}
+          value={value}
+          onChange={(e) => setStateValue(keyName, e.target.value)}
+          className="w-full px-2 border rounded-md"
+          placeholder={placeholder}
+        />
+      )}
     </div>
   );
 }

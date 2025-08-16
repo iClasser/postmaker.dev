@@ -1,6 +1,7 @@
 "use client";
 import { MainHomeLayout } from "@repo/web-ui/layout";
-import React, { useState } from "react";
+import React, { useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import "./page.module.css";
 import QuizMarkdownEditor from "../components/markdown-editor";
 import ChatgptEditor from "../components/chatgpt-editor";
@@ -22,16 +23,33 @@ const tabs = [
   }
 ];
 
-export default function Home() {
-  const [tab, setTab] = useState("markdown");
+function HomeContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
+  const currentTab = searchParams.get("t") || "markdown";
+  
+  const setTab = useCallback((newTab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("t", newTab);
+    router.push(`?${params.toString()}`);
+  }, [searchParams, router]);
 
   return (
-    <MainHomeLayout tab={tab} tabs={tabs} setTab={setTab}>
+    <MainHomeLayout tab={currentTab} tabs={tabs} setTab={setTab}>
       <CardSizeProvider>
-        {tab === "markdown" ? <QuizMarkdownEditor /> : null}
-        {tab === "chatgpt" ? <ChatgptEditor /> : null}
-        {tab === "gradient" ? <GradientEditor /> : null}
+        {currentTab === "markdown" ? <QuizMarkdownEditor /> : null}
+        {currentTab === "chatgpt" ? <ChatgptEditor /> : null}
+        {currentTab === "gradient" ? <GradientEditor /> : null}
       </CardSizeProvider>
     </MainHomeLayout>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
