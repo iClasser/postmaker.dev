@@ -1,19 +1,23 @@
 "use client";
-import { GradientPreview } from "@repo/ui/gradient-preview/gradient-preview";
-import { useContext, useEffect, useState } from "react";
+
+import { XPreview } from "@repo/ui/x-preview/x-preview";
+import { useContext, useEffect, useState, useRef } from "react";
 import { DownloadButton } from "@repo/web-ui/download-button";
-import { CardSizeContext } from "@repo/ui/context/CardSizeContext";
+import {
+  CardSizeContext,
+  CardSizeProvider,
+} from "@repo/ui/context/CardSizeContext";
 import SocialMediaController from "@repo/web-ui/SocialMediaController";
-
-import { Cog, Delete, Move, Package2, Trash2 } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
+import { Trash2 } from "lucide-react";
 import { SliderBox, DrawInput, CheckBox } from "./common";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
+import { Cog, Delete, Move, Package2 } from "lucide-react";
 
-const STORAGE_KEY = "gradient-editor-v1";
+const STORAGE_KEY = "xCardv1";
 
-const cardBgColor = "bg-white";
-const textColor = "text-gray-900";
-const borderColor = "border-gray-300";
+const cardBgColor = "bg-gradient-to-br from-sky-200 via-ice-100 to-white";
+const textColor = "text-black";
+const borderColor = "border-gray-200";
 
 const componentSocialMapping = {
   instagramPost: {
@@ -31,13 +35,13 @@ const componentSocialMapping = {
   twitterPost: {
     width: 1200 / 2,
     height: 675 / 2,
-    innerPaddingY: 0,
+    innerPaddingY: 50,
     scale: 0.7,
   },
   twitterHeader: {
     width: (1500 / 2) * 1.2,
     height: (500 / 2) * 1.2,
-    innerPaddingY: 0,
+    innerPaddingY: 500 / 10,
     scale: 0.7,
   },
   facebookPost: {
@@ -72,45 +76,43 @@ const componentSocialMapping = {
   },
 };
 
-const gradientTypes = [
-  { label: "Default", value: "default" },
-  { label: "Nano", value: "nano" },
-  { label: "Mini", value: "mini" },
-  { label: "Pink", value: "pink" },
-  { label: "Conic", value: "conic" },
-  { label: "Custom Image", value: "custom" },
-];
-
-export default function GradientEditor() {
+export default function XEditor() {
   const [loaded, setLoaded] = useState(false);
+  const profileImageInputRef = useRef<HTMLInputElement>(null);
+  const postImageInputRef = useRef<HTMLInputElement>(null);
 
   const [state, setState] = useState({
+    previewHeightPixels: 540,
+    previewWidthPixels: 540,
     width: 540,
     height: 540,
     innerPaddingX: 30,
     innerPaddingY: 50,
     scale: 1,
     exportScale: 1,
-    pageName: "@postmaker.dev",
+    pageName: "postmaker.dev",
     logoUrl: "/logo.svg",
     logoUrlLabel: "Created with Postmaker.dev",
-    borderRadius: 0,
+    borderRadius: 16,
     hasCardBorder: false,
     isRtl: false,
-    customImage: "/logo.svg",
-
-    title: "Postmaker.dev",
-    text: `Create Posts`,
-    rounded: true,
-    gradientType: "default",
-    gradientWidth: 0,
-    gradientHeight: 0,
-    blurAmount: 0,
+    name: "Postmaker.dev",
+    username: "postmaker.dev",
+    text: "Create beatiful social media images in seconds with Postmaker.dev! #NoCode #Design #SocialMedia",
+    showXUI: true,
+    verified: true,
+    profileImage: "/logo.svg",
+    postImage: "",
+    postTimestamp: new Date().toISOString(),
+    postComments: 123,
+    postRetweets: 456,
+    postLikes: 789,
+    postViews: 1000,
   });
 
   const {
-    width,
-    height,
+    width: width,
+    height: height,
     innerPaddingX,
     innerPaddingY,
     pageName,
@@ -119,16 +121,20 @@ export default function GradientEditor() {
     borderRadius,
     hasCardBorder,
     isRtl,
-    title,
-    rounded,
+    name,
+    username,
+    showXUI,
+    verified,
     text,
+    profileImage,
+    postImage,
     scale,
     exportScale,
-    gradientWidth,
-    gradientHeight,
-    gradientType,
-    blurAmount,
-    customImage,
+    postTimestamp,
+    postComments,
+    postRetweets,
+    postLikes,
+    postViews,
   } = state;
 
   // Load from localStorage on mount
@@ -158,6 +164,25 @@ export default function GradientEditor() {
     setState((prev) => ({ ...prev, [key]: value }));
   };
 
+  const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "profile" | "post"
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setStateValue(
+            type === "profile" ? "profileImage" : "postImage",
+            event.target.result as string
+          );
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="p-4 flex md:flex-row flex-col gap-2 w-full">
       <div className="min-h-screen preview-left-panel relative">
@@ -167,7 +192,7 @@ export default function GradientEditor() {
         >
           <Trash2 size={16} className="inline-block mr-1" />
         </button>
-        <h2 className="preview-heading">Gradient Card</h2>
+        <h2 className="preview-heading">X Card</h2>
 
         {/* Tabs */}
         <Tabs defaultValue="card" className="w-full">
@@ -183,107 +208,153 @@ export default function GradientEditor() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="card">
-            {/* gradient types select */}
-            <p>Gradient Type:</p>
-            <select
-              className="w-full px-2 border rounded-md mb-4"
-              value={gradientType}
-              name="gradientType"
-              onChange={(e) => {
-                if (e.target.value === "conic") {
-                  setStateValue("blurAmount", 40);
-                } else {
-                  setStateValue("blurAmount", 0);
-                }
-                setStateValue(e.target.name, e.target.value);
-              }}
-            >
-              {gradientTypes.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
-            {gradientType === "custom" && (
-              <>
-                <DrawInput
-                  keyName="customImage"
-                  value={customImage}
-                  placeholder="Enter custom image URL..."
-                  label="Custom Image URL"
-                  onChange={setStateValue}
-                  isTextArea={false}
-                  className="mt-4"
-                />
-              </>
-            )}
-            {/* Blur Amount */}
-
-            <SliderBox
-              keyName="blurAmount"
-              label="Blur Amount"
-              value={blurAmount || 0}
-              unit="px"
-              min={0}
-              max={100}
-              setStateValue={(name, value) =>
-                setStateValue(name, Number(value))
-              }
-            />
             <DrawInput
-              keyName="title"
-              value={title}
-              placeholder="Enter title..."
-              label="Title"
+              keyName="name"
+              value={name}
+              placeholder="Enter name..."
+              label="Name"
               onChange={setStateValue}
               isTextArea={false}
               className="mt-4"
             />
 
             <DrawInput
-              keyName="text"
-              value={text}
-              placeholder="Enter subtitle..."
-              label="Subtitle"
+              keyName="username"
+              value={username}
+              placeholder="Enter username..."
+              label="Username"
               onChange={setStateValue}
               isTextArea={false}
-              className=""
+              className="mt-4"
+            />
+            <DrawInput
+              keyName="text"
+              value={text}
+              placeholder="Enter post text..."
+              label="Post Text"
+              onChange={setStateValue}
+              isTextArea={true}
+              className="mt-4"
             />
 
-            <div className="flex flex-col mt-4 border p-2 rounded-md">
-              {/* Checkbox */}
-              <CheckBox
-                keyName="rounded"
-                value={rounded}
-                label="Rounded Gradient"
-                setStateValue={setStateValue}
+            {/* Profile Image Upload */}
+            <div className=" mb-4">
+              <p>Profile Image:</p>
+              <input
+                type="file"
+                ref={profileImageInputRef}
+                onChange={(e) => handleImageUpload(e, "profile")}
+                accept="image/*"
+                className="hidden"
               />
+              <button
+                onClick={() => profileImageInputRef.current?.click()}
+                className="px-2 py-2 rounded-md border hover:bg-gray-50 hover:text-gray-800"
+              >
+                Upload Profile Image
+              </button>
+              {profileImage && (
+                <button
+                  onClick={() => setStateValue("profileImage", "")}
+                  className="ml-2 px-4 py-2 bg-red-400 rounded-md hover:bg-red-500"
+                >
+                  Remove
+                </button>
+              )}
+
+              {profileImage.length < 1000 && (
+                <DrawInput
+                  keyName="profileImage"
+                  value={profileImage}
+                  placeholder="or enter profile image URL..."
+                  label="Or Profile Image URL"
+                  onChange={setStateValue}
+                  isTextArea={false}
+                  className="mt-2"
+                />
+              )}
             </div>
 
-            <div className="flex flex-col mt-4 border p-2 rounded-md">
-              {/* Slider */}
-              <SliderBox
-                keyName="gradientWidth"
-                label="Gradient Width"
-                value={gradientWidth}
-                unit="px"
-                min={0}
-                max={1920}
-                setStateValue={setStateValue}
-              />
-            </div>
-            <div className="flex flex-col mt-4 border p-2 rounded-md">
-              <SliderBox
-                keyName="gradientHeight"
-                label="Gradient Height"
-                value={gradientHeight}
-                unit="px"
-                min={0}
-                max={1920}
-                setStateValue={setStateValue}
-              />
-            </div>
+            <CheckBox
+              keyName="showXUI"
+              value={showXUI}
+              label="Show X UI"
+              setStateValue={setStateValue}
+              widthWrapper={true}
+            />
+            {/* verfied */}
+            <CheckBox
+              keyName="verified"
+              value={verified}
+              label="Verified Account"
+              setStateValue={setStateValue}
+              widthWrapper={true}
+            />
+
+            {/* timestamp */}
+            <DrawInput
+              keyName="postTimestamp"
+              value={new Date(postTimestamp).toISOString().slice(0, 16)}
+              type="datetime-local"
+              placeholder="Enter post timestamp..."
+              label="Post Timestamp"
+              onChange={setStateValue}
+              isTextArea={false}
+              className="mt-4"
+            />
+
+            {/* postViews */}
+            <SliderBox
+              keyName="postViews"
+              label="Post Views"
+              value={postViews}
+              formatValue={true}
+              unit=""
+              min={0}
+              max={10000000}
+              setStateValue={setStateValue}
+              widthWrapper={true}
+            />
+
+            {/* post comments */}
+            <SliderBox
+              keyName="postComments"
+              label="Post Comments"
+              value={postComments}
+              formatValue={true}
+              unit=""
+              min={0}
+              widthWrapper={true}
+              max={10000000}
+              setStateValue={setStateValue}
+            />
+            {/* post retweets */}
+            <SliderBox
+              keyName="postRetweets"
+              label="Post Retweets"
+              value={postRetweets}
+              formatValue={true}
+              unit=""
+              widthWrapper={true}
+              min={0}
+              max={10000000}
+              setStateValue={setStateValue}
+            />
+            {/* post likes */}
+            <SliderBox
+              keyName="postLikes"
+              label="Post Likes"
+              value={postLikes}
+              formatValue={true}
+              widthWrapper={true}
+              unit=""
+              min={0}
+              max={10000000}
+              setStateValue={setStateValue}
+            />
           </TabsContent>
+
+          {/* Settings and others */}
           <TabsContent value="settings">
             <DrawInput
               keyName="pageName"
@@ -426,26 +497,27 @@ export default function GradientEditor() {
           }}
           className="transition-all duration-200 select-none preview-container-drag"
         >
-          <GradientPreview
+          <XPreview
             logoUrl={logoUrl}
             logoUrlLabel={logoUrlLabel}
             pageName={pageName}
-            title={title}
+            name={name}
+            username={username}
             text={text}
-            gradientWidth={gradientWidth}
-            gradientHeight={gradientHeight}
-            rounded={rounded}
-            blurAmount={blurAmount}
+            showXUI={showXUI}
+            verified={verified}
+            profileImage={profileImage}
+            postImage={postImage}
+            postTimestamp={postTimestamp}
+            postComments={postComments}
+            postRetweets={postRetweets}
+            postLikes={postLikes}
+            postViews={postViews}
             scale={scale}
-            gradientType={gradientType}
-            customImage={customImage}
             styles={{
               zIndex: 10,
-              // scale: exportScale,
               height: "100%",
               direction: isRtl ? "rtl" : "ltr",
-              backgroundColor: "white",
-              color: "black",
               ...(innerPaddingX
                 ? {
                     paddingLeft: `${innerPaddingX}px`,
@@ -462,12 +534,11 @@ export default function GradientEditor() {
             }}
             className={`w-full ${
               hasCardBorder ? "border" : ""
-            } p-6 shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} ${borderColor}
-          w-full`}
+            } shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} ${borderColor}`}
           />
         </div>
       </div>
-      <DownloadButton className="show-mobile bg-black shadow-2xl text-white p-4 rounded-md hover:bg-sky-700" />
+      <DownloadButton className="show-mobile bg-sky-600 shadow-2xl text-white p-4 rounded-md hover:bg-sky-700" />
     </div>
   );
 }

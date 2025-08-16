@@ -1,28 +1,46 @@
-.twitter-preview-container {
+.x-preview-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
-  background: linear-gradient(135deg, #87CEEB 0%, #E0F7FA 50%, #FFFFFF 100%);
-  color: #000;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: white;
+  color: #0f1419;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
   padding: 20px;
   box-sizing: border-box;
   border-radius: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.twitter-header {
+.x-dark {
+  background: black;
+  color: white;
+}
+
+.x-icon-main {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  fill: #0f1419;
+  vertical-align: middle;
+}
+
+.x-header {
   display: flex;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.twitter-avatar {
+.x-avatar {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #B388FF 0%, #FF80AB 100%);
+  border-radius: 10px;
+  border: 1px solid #dfdfdf25;
+  background: transparent;
   margin-right: 12px;
   flex-shrink: 0;
   overflow: hidden;
@@ -35,31 +53,31 @@
   object-fit: cover;
 }
 
-.twitter-user-info {
+.x-user-info {
   display: flex;
   flex-direction: column;
 }
 
-.twitter-name-container {
+.x-name-container {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.twitter-name {
+.x-name {
   font-weight: 700;
   font-size: 16px;
   line-height: 20px;
   color: #000;
 }
 
-.twitter-username {
+.x-username {
   color: #555;
   font-size: 15px;
   line-height: 20px;
 }
 
-.twitter-text {
+.x-text {
   font-size: 16px;
   line-height: 24px;
   margin-bottom: 16px;
@@ -67,11 +85,11 @@
   color: #000;
 }
 
-.twitter-text p {
+.x-text p {
   margin: 0 0 16px 0;
 }
 
-.twitter-text p:last-child {
+.x-text p:last-child {
   margin-bottom: 0;
 }
 
@@ -87,31 +105,31 @@
   object-fit: cover;
 }
 
-.twitter-footer {
+.x-footer {
   margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.twitter-stats {
-  color: #555;
+.x-stats {
+  border-bottom: 1px solid rgba(34, 34, 34, 0.03);
+  color: #858585;
   font-size: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
   display: flex;
   gap: 4px;
 }
 
-.twitter-stat {
+.x-stat {
   margin-right: 4px;
 }
 
-.twitter-actions {
+.x-actions {
   display: flex;
   justify-content: space-between;
   max-width: 425px;
 }
 
-.twitter-action {
+.x-action {
   display: flex;
   align-items: center;
   color: #555;
@@ -119,14 +137,14 @@
   gap: 4px;
 }
 
-.twitter-icon {
+.x-icon {
   width: 18px;
   height: 18px;
   fill: currentColor;
 }
 
-.twitter-verified {
+.x-verified {
   width: 18px;
   height: 18px;
-  fill: #1DA1F2;
+  fill: #1da1f2;
 }
