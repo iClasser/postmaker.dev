@@ -5,6 +5,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import "./page.module.css";
 import QuizMarkdownEditor from "../components/markdown-editor";
 import ChatgptEditor from "../components/chatgpt-editor";
+import XEditor from "../components/x-editor";
+
 import GradientEditor from "../components/gradient-editor";
 import { CardSizeProvider } from "@repo/ui/context/CardSizeContext";
 
@@ -20,7 +22,12 @@ const tabs = [
   {
     key: "gradient",
     label: "Gradient Card",
-  }
+  },
+  {
+    key: "x",
+    label: "X Card",
+  },
+
 ];
 
 function HomeContent() {
@@ -41,6 +48,7 @@ function HomeContent() {
         {currentTab === "markdown" ? <QuizMarkdownEditor /> : null}
         {currentTab === "chatgpt" ? <ChatgptEditor /> : null}
         {currentTab === "gradient" ? <GradientEditor /> : null}
+        {currentTab === "x" ? <XEditor /> : null}
       </CardSizeProvider>
     </MainHomeLayout>
   );
