@@ -64,7 +64,6 @@ export const NotebookPreview: React.FC<NotebookPreviewProps> = ({
               </li>
             ))}
           </ul>
-          
         </div>
       </div>
     </CardContainer>

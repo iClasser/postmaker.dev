@@ -69,10 +69,10 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
           <div
             style={{
               display: "flex",
+              border: "1px solid #eee",
               justifyContent: "center",
               alignItems: "center",
               width: "100%",
-              height: gradientHeight ? gradientHeight : 200,
               marginBottom: "16px",
               filter: `blur(${blurAmount}px)`,
             }}
@@ -195,8 +195,7 @@ export const GradientPreview: React.FC<GradientPreviewProps> = ({
           </div>
         )}
 
-
-         {gradientType === "custom" && (
+        {gradientType === "custom" && (
           <div
             style={{
               display: "flex",

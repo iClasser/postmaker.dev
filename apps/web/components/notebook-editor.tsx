@@ -1,19 +1,22 @@
 "use client";
 
 import { NotebookPreview } from "@repo/ui/notebookcard-preview/notebook-preview";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { DownloadButton } from "@repo/web-ui/download-button";
 import {
   CardSizeContext,
   CardSizeProvider,
 } from "@repo/ui/context/CardSizeContext";
 import SocialMediaController from "@repo/web-ui/SocialMediaController";
+import { Trash2 } from "lucide-react";
+import { SliderBox, DrawInput, CheckBox } from "./common";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
+import { Cog, Delete, Move, Package2 } from "lucide-react";
 
 const STORAGE_KEY = "notebookCardv1";
 
 const cardBgColor = "bg-violet-500";
 const textColor = "text-white";
-
 
 const componentSocialMapping = {
   instagramPost: {
@@ -136,6 +139,12 @@ export default function NotebookEditor() {
     setLoaded(true);
   }, []);
 
+  const deleteStorage = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    alert("Storage cleared! Reloading the page.");
+    window.location.reload();
+  };
+
   const setStateValue = (key: string, value: any) => {
     setState((prev) => ({ ...prev, [key]: value }));
   };
@@ -158,198 +167,198 @@ export default function NotebookEditor() {
 
   return (
     <div className="p-4 flex md:flex-row flex-col gap-2 w-full">
-      <div className="min-h-screen preview-left-panel">
-        <h2 className="preview-heading">Notebook Card</h2>
-        <p>Page Name:</p>
-        <input
-          className="w-full px-2 border rounded-md"
-          value={pageName}
-          name="pageName"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter page name..."
-        />
-        <p>Logo URL:</p>
-        <input
-          className="w-full px-2 border rounded-md"
-          value={logoUrl}
-          name="logoUrl"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter logo URL..."
-        />
-        <p>Logo URL Label:</p>
-        <input
-          className="w-full px-2 border rounded-md"
-          value={logoUrlLabel}
-          name="logoUrlLabel"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter logo URL label..."
-        />
-        <p>Title:</p>
-        <input
-          className="w-full px-2 border rounded-md"
-          value={title}
-          name="title"
-          onChange={(e) => setStateValue(e.target.name, e.target.value)}
-          placeholder="Enter title..."
-        />
-        
-        <p>Checklist Items:</p>
-        {items.map((item, index) => (
-          <div key={index} className="flex mb-2">
-            <input
-              className="flex-1 px-1 border rounded-md mr-2"
-              value={item}
-              onChange={(e) => handleItemChange(index, e.target.value)}
-              placeholder="Enter item text..."
-            />
-            <button
-              onClick={() => removeItem(index)}
-              className="px-1 bg-red-400 rounded-md hover:bg-red-500"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
+      <div className="min-h-screen preview-left-panel relative">
         <button
-          onClick={addItem}
-          className="mt-2 px-4 py-1 bg-blue-500 rounded-md hover:bg-blue-700"
+          onClick={deleteStorage}
+          className="absolute top-2 right-1 text-white  rounded-md hover:text-black cursor-pointer"
         >
-          Add Item
+          <Trash2 size={16} className="inline-block mr-1" />
         </button>
+        <h2 className="preview-heading">Notebook Card</h2>
 
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={showCheckboxes}
-              name="showCheckboxes"
-              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
-              className="mr-2"
+        {/* Tabs */}
+        <Tabs defaultValue="card" className="w-full">
+          <TabsList className="mb-4 border-b">
+            <TabsTrigger value="card" className="mr-2">
+              <Package2 size={16} className="inline-block mr-1" />
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="mr-2">
+              <Cog size={16} className="inline-block mr-1" />
+            </TabsTrigger>
+            <TabsTrigger value="page" className="mr-2">
+              <Move size={16} className="inline-block mr-1" />
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="card">
+            <DrawInput
+              keyName="title"
+              value={title}
+              placeholder="Enter title..."
+              label="Title"
+              onChange={setStateValue}
+              isTextArea={false}
+              className="mt-4"
             />
-            Show Checkboxes
-          </label>
-        </div>
 
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          <label className="block mb-2">
-            Preview Width: {width ? width : 0}px
-          </label>
-          <input
-            type="range"
-            min="40"
-            name="previewWidth"
-            max="1920"
-            value={width}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          <label className="block mb-2">
-            Preview Height: {height ? height : 0}px
-          </label>
-          <input
-            type="range"
-            min="40"
-            name="previewHeight"
-            max="1920"
-            value={height}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          <label className="block mb-2">
-            Content Scale: {scale ? scale : 0}x
-          </label>
-          <input
-            type="range"
-            min="0"
-            name="scale"
-            max="300"
-            value={scale * 100}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value) / 100)
-            }
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          <label className="block mb-2">Border Radius: {borderRadius}px</label>
-          <input
-            type="range"
-            min="0"
-            max="50"
-            name="borderRadius"
-            value={borderRadius}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
+            <div className="mb-4">
+              <p>Checklist Items:</p>
+              {items.map((item, index) => (
+                <div key={index} className="flex mb-2">
+                  <input
+                    className="flex-1 px-1 border rounded-md mr-2"
+                    value={item}
+                    onChange={(e) => handleItemChange(index, e.target.value)}
+                    placeholder="Enter item text..."
+                  />
+                  <button
+                    onClick={() => removeItem(index)}
+                    className="px-1 bg-red-400 rounded-md hover:bg-red-500"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={addItem}
+                className="mt-2 px-4 py-1 bg-blue-500 rounded-md hover:bg-blue-700"
+              >
+                Add Item
+              </button>
+            </div>
 
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={hasCardBorder}
-              name="hasCardBorder"
-              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
-              className="mr-2"
+            <CheckBox
+              keyName="showCheckboxes"
+              value={showCheckboxes}
+              label="Show Checkboxes"
+              setStateValue={setStateValue}
+              widthWrapper={true}
             />
-            Has Card Border
-          </label>
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              checked={isRtl}
-              name="isRtl"
-              onChange={(e) => setStateValue(e.target.name, e.target.checked)}
-              className="mr-2"
-            />
-            Is RTL
-          </label>
-        </div>
+          </TabsContent>
 
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          <label className="block mb-2">
-            Inner Padding X: {innerPaddingX}px
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="150"
-            name="innerPaddingX"
-            value={innerPaddingX}
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
-        <div className="flex flex-col mt-4 border p-2 rounded-md">
-          <label className="block mb-2">
-            Inner Padding Y: {innerPaddingY}px
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="1920"
-            value={innerPaddingY}
-            name="innerPaddingY"
-            onChange={(e) =>
-              setStateValue(e.target.name, Number(e.target.value))
-            }
-            className="w-full"
-          />
-        </div>
+          {/* Settings and others */}
+          <TabsContent value="settings">
+            <DrawInput
+              keyName="pageName"
+              value={pageName}
+              placeholder="Enter page name..."
+              label="Page Name"
+              onChange={setStateValue}
+              isTextArea={false}
+              className="mt-4"
+            />
+            <DrawInput
+              keyName="logoUrl"
+              value={logoUrl}
+              placeholder="Enter logo URL..."
+              label="Logo URL"
+              onChange={setStateValue}
+              isTextArea={false}
+              className="mt-4"
+            />
+            <DrawInput
+              keyName="logoUrlLabel"
+              value={logoUrlLabel}
+              placeholder="Enter logo URL label..."
+              label="Logo URL Label"
+              onChange={setStateValue}
+              isTextArea={false}
+              className="mt-4"
+            />
+
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              {/* Checkbox for card border */}
+              <CheckBox
+                keyName="hasCardBorder"
+                value={hasCardBorder}
+                label="Has Card Border"
+                setStateValue={setStateValue}
+              />
+            </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              {/* Slider */}
+              <SliderBox
+                keyName="borderRadius"
+                label="Border Radius"
+                value={borderRadius}
+                unit="px"
+                min={0}
+                max={50}
+                setStateValue={setStateValue}
+              />
+            </div>
+
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              {/* Checkbox */}
+              <CheckBox
+                keyName="isRtl"
+                value={isRtl}
+                label="Is RTL"
+                setStateValue={setStateValue}
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value="page">
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              <SliderBox
+                keyName="width"
+                label="Preview Width"
+                value={width}
+                unit="px"
+                min={40}
+                max={1920}
+                setStateValue={setStateValue}
+              />
+            </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              <SliderBox
+                keyName="height"
+                label="Preview Height"
+                value={height}
+                unit="px"
+                min={40}
+                max={1920}
+                setStateValue={setStateValue}
+              />
+            </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              <SliderBox
+                keyName="scale"
+                label="Content Scale"
+                value={scale * 100}
+                unit="x"
+                min={0}
+                max={300}
+                setStateValue={(name, value) =>
+                  setStateValue(name, value / 100)
+                }
+              />
+            </div>
+
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              <SliderBox
+                keyName="innerPaddingX"
+                label="Inner Padding X"
+                value={innerPaddingX}
+                unit="px"
+                min={0}
+                max={150}
+                setStateValue={setStateValue}
+              />
+            </div>
+            <div className="flex flex-col mt-4 border p-2 rounded-md">
+              {/* Slider */}
+              <SliderBox
+                keyName="innerPaddingY"
+                label="Inner Padding Y"
+                value={innerPaddingY}
+                unit="px"
+                min={0}
+                max={1920}
+                setStateValue={setStateValue}
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
       {/* Resizable Preview Panel */}
       <div className="preview-right-panel">
@@ -397,7 +406,7 @@ export default function NotebookEditor() {
             }}
             className={`w-full ${
               hasCardBorder ? "border" : ""
-            } shadow-md transition-colors duration-300 ${cardBgColor} ${textColor} `}
+            } shadow-md transition-colors duration-300 ${cardBgColor} ${textColor}`}
           />
         </div>
       </div>

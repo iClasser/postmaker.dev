@@ -111,6 +111,7 @@ export const PastelGradientCanvas = ({
     <canvas
       ref={canvasRef}
       style={{
+        display: "block",
         width: width ? width + "px" : "100%",
         height: height ? height + "px" : "100%",
         borderRadius: rounded ? "15px" : "0",
