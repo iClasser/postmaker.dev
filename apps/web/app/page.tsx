@@ -8,6 +8,7 @@ import ChatgptEditor from "../components/chatgpt-editor";
 import XEditor from "../components/x-editor";
 import NotebookEditor from "../components/notebook-editor";
 import GradientEditor from "../components/gradient-editor";
+import ProfileEditor from "../components/profile-editor";
 import { CardSizeProvider } from "@repo/ui/context/CardSizeContext";
 
 const tabs = [
@@ -31,7 +32,11 @@ const tabs = [
     key: "notebook",
     label: "Notebook Card",
   },
-
+  {
+    key: "profile",
+    label: "Profile Card",
+  },
+  
 ];
 
 function HomeContent() {
@@ -54,6 +59,7 @@ function HomeContent() {
         {currentTab === "gradient" ? <GradientEditor /> : null}
         {currentTab === "x" ? <XEditor /> : null}
         {currentTab === "notebook" ? <NotebookEditor /> : null}
+        {currentTab === "profile" ? <ProfileEditor /> : null}
       </CardSizeProvider>
     </MainHomeLayout>
   );
