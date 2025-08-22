@@ -1,0 +1,56 @@
+"use client";
+import { MainHomeLayout } from "@repo/web-ui/layout";
+import React, { useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import "./page.module.css";
+import QuizMarkdownEditor from "../components/markdown-editor";
+import ChatgptEditor from "../components/chatgpt-editor";
+import XEditor from "../components/x-editor";
+
+import GradientEditor from "../components/gradient-editor";
+import { CardSizeProvider } from "@repo/ui/context/CardSizeContext";
+
+const tabs = [
+  {
+    key: "markdown",
+    label: "Markdown Card",
+  },
+  {
+    key: "chatgpt",
+    label: "ChatGPT Card",
+  },
+  {
+    key: "gradient",
+    label: "Gradient Card",
+  },
+  {
+    key: "x",
+    label: "X Card",
+  },
+
+];
+
+export default function TabContents() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
+  const currentTab = searchParams.get("t") || "markdown";
+  
+  const setTab = useCallback((newTab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("t", newTab);
+    router.push(`?${params.toString()}`);
+  }, [searchParams, router]);
+
+  return (
+    <MainHomeLayout tab={currentTab} tabs={tabs} setTab={setTab}>
+      <CardSizeProvider>
+        {currentTab === "markdown" ? <QuizMarkdownEditor /> : null}
+        {currentTab === "chatgpt" ? <ChatgptEditor /> : null}
+        {currentTab === "gradient" ? <GradientEditor /> : null}
+        {currentTab === "x" ? <XEditor /> : null}
+      </CardSizeProvider>
+    </MainHomeLayout>
+  );
+}
+

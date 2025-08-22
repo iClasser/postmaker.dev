@@ -32,9 +32,54 @@ const keyworsSeo = [
 ];
 
 export const metadata: Metadata = {
-  title: "Postmaker.dev",
-  description: "iClasser PosterMaker",
-  keywords: keyworsSeo,
+  title: "Postmaker.dev - Create Stunning Posters Online",
+  description:
+    "Postmaker.dev is an interactive poster maker app that allows you to design your own posters easily with our web-based tool.",
+  generator: "Turborepo",
+  icons: [
+    { url: "/favicon.ico", sizes: "any", rel: "icon" },
+    { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+    { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+  ],
+  manifest: "/site.webmanifest",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0b0b" },
+  ],
+  keywords: [
+    "Postmaker.dev",
+    "interactive",
+    "posters",
+    "poster maker",
+    "web-based tool",
+    "design posters",
+    "create posters online",
+  ],
+  authors: [{ name: "Postmaker.dev" }],
+  openGraph: {
+    title: "Postmaker.dev - Create Stunning Posters Online",
+    description:
+      "Postmaker.dev is an interactive poster maker app that allows you to design your own posters easily with our web-based tool.",
+    url: "https://postmaker.dev",
+    siteName: "Postmaker.dev",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "https://postmaker.dev/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Postmaker.dev - Create Stunning Posters Online",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Postmaker.dev - Create Stunning Posters Online",
+    images: "https://postmaker.dev/og-image.png",
+    description:
+      "Postmaker.dev is an interactive poster maker app that allows you to design your own posters easily with our web-based tool.",
+  },
 };
 
 export default function RootLayout({
