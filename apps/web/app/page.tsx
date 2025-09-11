@@ -62,7 +62,6 @@ function HomeContent() {
         {currentTab === "x" ? <XEditor /> : null}
         {currentTab === "notebook" ? <NotebookEditor /> : null}
         {currentTab === "profile" ? <ProfileEditor /> : null}
-       
       </CardSizeProvider>
     </MainHomeLayout>
   );
@@ -75,4 +74,3 @@ export default function Home() {
     </Suspense>
   );
 }
-
